@@ -42,7 +42,6 @@ struct Jogos
     struct Jogo *lista;
 };
 
-
 struct Recordes
 {
     int tamanho;
@@ -53,7 +52,7 @@ struct Usuarios usuarios;
 struct Jogos jogos;
 struct Recordes recordes;
 
-void addUser()
+void UserAdd()
 {
     struct Usuario temp;
 
@@ -81,19 +80,81 @@ void addUser()
     }
 }
 
+void JogoAdd()
+{
+    struct Jogo temp;
+
+    printf("Digite as informações do jogo:\n");
+    printf("\nNome\n");
+    printf("> ");
+    scanf("%23s", temp.nome);
+    printf("\nDesenvolvedores\n");
+    printf("> ");
+    scanf("%31s", temp.desenvolvedora);
+    printf("\nLançamento (dd-mm-aaaa)\n");
+    printf("> ");
+    scanf("%10s", temp.data_lancamento);
+    printf("\nPlatafoma\n");
+    printf("> ");
+    scanf("%11s", temp.plataforma);
+
+    jogos.tamanho++;
+    jogos.lista = (struct Jogo *) realloc(jogos.lista, jogos.tamanho * sizeof(struct Jogo));
+    if (jogos.lista != NULL) jogos.lista[jogos.tamanho - 1] = temp;
+    else
+    {
+        printf("Erro ao alocar memória para novo jogo");
+        jogos.tamanho--;
+    }
+}
+
+void dump() // Temporario para debugar com mais facilidade comando 123
+{
+    if (jogos.tamanho != 0)
+    {
+        printf("\nJogos\n");
+        for (int i = 0; i < jogos.tamanho; i++){
+            printf("---\n")
+            printf("Nome: %s\n", jogos.lista[i].nome);
+            printf("desenvolvedora: %s\n", jogos.lista[i].desenvolvedora);
+            printf("data_lancamento: %s\n", jogos.lista[i].data_lancamento);
+            printf("plataforma: %s\n", jogos.lista[i].plataforma);
+            printf("---\n")
+        }
+    }
+    if (usuarios.tamanho != 0)
+    {
+        printf("\nUsuarios\n");
+        for (int i = 0; i < usuarios.tamanho; i++){
+            printf("---\n")
+            printf("Apelido: %s\n", usuarios.lista[i].apelido);
+            printf("Email: %s\n", usuarios.lista[i].email);
+            printf("nascimento: %s\n", usuarios.lista[i].nascimento);
+            printf("pais: %s\n", usuarios.lista[i].pais);
+            printf("---\n")
+        }
+    }
+}
+
 void interpretador(int prompt)
 {
-    char ajuda[] = "[0] = Ajuda\n[1] = Adicionar Jogador\n[2] = Editar Jogador\n[3] = Deletar Jogador\n[4] = Adicionar Jogo\n[5] = Editar Jogo\n[6] = Deletar Jogo\n[7] = Adicionar Recorde\n[8] = Editar Recorde\n[9] = Remover Recorde\n[999] = Finalizar Programa";
+    char ajuda[] = "[0] = Ajuda\n[1] = Adicionar Jogador\n[2] = Editar Jogador\n[3] = Deletar Jogador\n[4] = Adicionar Jogo\n[5] = Editar Jogo\n[6] = Deletar Jogo\n[7] = Adicionar Recorde\n[8] = Editar Recorde\n[9] = Remover Recorde\n[999] = Finalizar Programa\n";
 
     switch (prompt){
         case 0:
             printf("%s", ajuda);
             break;
         case 1:
-            addUser();
+            UserAdd();
+            break;
+        case 4:
+            JogoAdd();
+            break;
+        case 123:
+            dump();
             break;
         case 999:
-            printf("Adeus!");
+            printf("Adeus!\n");
             break;
         default:
             printf("Comando não encontrado\n");
