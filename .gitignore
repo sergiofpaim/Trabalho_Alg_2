@@ -1,0 +1,15 @@
+*.exe
+*.out
+*.o
+*.a
+*.so
+*.dll
+
+build/
+bin/
+obj/
+
+.vscode/
+.idea/
+*.swp
+*.swo
