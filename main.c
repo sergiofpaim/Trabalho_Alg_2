@@ -194,7 +194,6 @@ void userEdit()
                         strcpy(usuarios.lista[posicao].apelido, temp);
                         printf("\nNome editado com sucesso\n");
                     }
-
                     break;
                 case 2:
                     printf("\nDigite o email:\n");
@@ -236,7 +235,9 @@ void userDelete()
     
     if ((posicao = userQuery(temp)) >= 0)
     {
-        
+        usuarios.lista[posicao] = usuarios.lista[usuarios.tamanho - 1]; 
+        usuarios.lista = (struct Usuario*) realloc(usuarios.lista, --usuarios.tamanho * sizeof(struct Usuario));
+        //TODO: Pegar todos os recordes do usuario da ultima posicao para a posicao atual
     }
     else printf("\nNome não encontrado\n");
 }
