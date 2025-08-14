@@ -55,8 +55,15 @@ struct Recordes recordes;
 int userQuery(char *identificacao)
 {
     for (int i = 0; i < usuarios.tamanho; i++)
-        if (strcmp(usuarios.lista[i].apelido, identificacao) == 0)
-            return i;
+        if (strcmp(usuarios.lista[i].apelido, identificacao) == 0) return i;
+    
+    return -1;
+}
+
+int recordeQuery(char *identificacao)
+{
+    for (int i = 0; i < recordes.tamanho; i++)
+        if (strcmp(recordes.lista[i].identificacao, identificacao) == 0) return i;
     
     return -1;
 }
@@ -64,7 +71,7 @@ int userQuery(char *identificacao)
 void userAdd()
 {
     struct Usuario temp;
-    int check = 0;
+    int nomeExistente = 0;
 
     printf("Digite as informações do usuário:\n");
     do
@@ -73,10 +80,10 @@ void userAdd()
         printf("> ");
         scanf("%23s", temp.apelido);
     
-        if ((check = userQuery(temp.apelido)) >= 0)
+        if ((nomeExistente = userQuery(temp.apelido)) >= 0)
             printf("\nNome já existe no banco de dados\n");
     }
-    while (check >= 0);
+    while (nomeExistente >= 0);
     //userQuery retorna negativo caso não exista o usuário
 
     printf("\nEmail\n");
@@ -236,9 +243,47 @@ void dump() // Temporario para debugar com mais facilidade comando 123
     }
 }
 
+void consulta()
+{
+    char nomeJogador[24];
+    char nomeJogo[24];
+    char identificacao_recorde[32];
+
+    struct Recordes consulta;
+    consulta.tamanho = 0;
+    consulta.lista = (struct Recorde*) malloc(consulta.tamanho * sizeof(struct Recorde));
+
+    printf("\nDigite a sua consulta neste formato <id_jogador nome_jogo identificacao_recorde> ou '*' para todos daquela posicao (no caso de busca de recorde, colocar '*' em jogador e jogo)\n");
+    scanf("%s %s %s", nomeJogador, nomeJogo, identificacao_recorde);
+
+    if (identificacao_recorde[0] != '*')
+    {
+        for (int i = 0; i < recordes.tamanho; i++)
+            if (((strcmp(recordes.lista[i].usuario->apelido, nomeJogador) == 0) || (strcmp(nomeJogador, "*") == 0)) &&
+                ((strcmp(recordes.lista[i].jogo->nome, nomeJogo) == 0) || (strcmp(nomeJogo, "*") == 0)))
+            {
+                consulta.lista = (struct Recorde*) realloc(consulta.lista, ++consulta.tamanho * sizeof(struct Recorde));
+                consulta.lista[consulta.tamanho - 1] = recordes.lista[i];
+            }
+            else printf("\nRecorde não encontrado\n");
+    }
+    else if (nomeJogador[0] != '*' && nomeJogo[0] != '*' && identificacao_recorde[0] == '*')
+    {
+        int posicao;
+        if ((posicao = recordeQuery(identificacao_recorde)) >= 0)
+            {
+                consulta.lista = (struct Recorde*) realloc(consulta.lista, ++consulta.tamanho * sizeof(struct Recorde));
+                consulta.lista[consulta.tamanho - 1] = recordes.lista[posicao];
+            }
+            else printf("\nRecorde não encontrado\n");
+    }
+    else
+        dump();
+}
+
 void interpretador(int prompt)
 {
-    char ajuda[] = "[0] = Ajuda\n[1] = Adicionar Jogador\n[2] = Editar Jogador\n[3] = Deletar Jogador\n[4] = Adicionar Jogo\n[5] = Editar Jogo\n[6] = Deletar Jogo\n[7] = Adicionar Recorde\n[8] = Editar Recorde\n[9] = Remover Recorde\n[999] = Finalizar Programa\n";
+    char ajuda[] = "[0] = Ajuda\n[1] = Adicionar Jogador\n[2] = Editar Jogador\n[3] = Deletar Jogador\n[4] = Adicionar Jogo\n[5] = Editar Jogo\n[6] = Deletar Jogo\n[7] = Adicionar Recorde\n[8] = Editar Recorde\n[9] = Remover Recorde\n[10] = Consultar\n[999] = Finalizar Programa\n";
 
     switch (prompt){
         case 0:
@@ -255,6 +300,9 @@ void interpretador(int prompt)
             break;
         case 4:
             jogoAdd();
+            break;
+        case 10:
+            consulta();
             break;
         case 123:
             dump();
