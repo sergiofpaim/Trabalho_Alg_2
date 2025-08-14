@@ -162,68 +162,6 @@ void userEdit()
     else printf("\nNome não encontrado\n");
 }
 
-void userEdit()
-{
-    int posicao;
-
-        printf("Digite o apelido do usuario:\n");
-        char temp[24];
-        printf("> ");
-        scanf("%23s", temp);
-    
-    if ((posicao = userQuery(temp)) >= 0)
-    {
-            int escolha = 0;
-            while (escolha != 999)
-                {
-                printf("\nVocê está no modo edição\n");
-                printf("\nDigite o campo que gostaria de editar (1. Apelido, 2. Email, 3. Data de Nascimento, 4. País, 999. Sair da edição)\n");
-                scanf("%d", &escolha);
-                switch (escolha)
-                {
-                case 1:
-                    char temp[24];
-                    printf("\nDigite o nome:\n");
-                    printf("> ");
-                    scanf("%23s", temp);
-
-                    // Confere se o nome já existe no banco de dados
-                    if (userQuery(temp) >= 0) printf("\nNome já existe\n");
-                    else
-                    {
-                        strcpy(usuarios.lista[posicao].apelido, temp);
-                        printf("\nNome editado com sucesso\n");
-                    }
-                    break;
-                case 2:
-                    printf("\nDigite o email:\n");
-                    printf("> ");
-                    scanf("%23s", usuarios.lista[posicao].email);
-                    printf("\nEmail editado com sucesso\n");
-                    break;
-                case 3:
-                    printf("\nDigite a data de nascimento:\n");
-                    printf("> ");
-                    scanf("%23s", usuarios.lista[posicao].nascimento);
-                    printf("\nNascimento editado com sucesso\n");
-                    break;
-                case 4:
-                    printf("\nDigite o país:\n");
-                    printf("> ");
-                    scanf("%23s", usuarios.lista[posicao].pais);
-                    printf("\nPaís editado com sucesso\n");
-                    break;
-                case 999:
-                    break;
-                default:
-                    printf("\nComando não encontrado\n");
-                    break;
-                }
-            }
-    }
-    else printf("\nNome não encontrado\n");
-}
-
 void userDelete()
 {
     int posicao;
@@ -311,6 +249,9 @@ void interpretador(int prompt)
             break;
         case 2:
             userEdit();
+            break;
+        case 3:
+            userDelete();
             break;
         case 4:
             jogoAdd();
