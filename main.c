@@ -52,14 +52,33 @@ struct Usuarios usuarios;
 struct Jogos jogos;
 struct Recordes recordes;
 
-void UserAdd()
+int userQuery(char *identificacao)
+{
+    for (int i = 0; i < usuarios.tamanho; i++)
+        if (strcmp(usuarios.lista[i].apelido, identificacao) == 0)
+            return i;
+    
+    return -1;
+}
+
+void userAdd()
 {
     struct Usuario temp;
+    int check = 0;
 
     printf("Digite as informações do usuário:\n");
-    printf("\nApelido\n");
-    printf("> ");
-    scanf("%23s", temp.apelido);
+    do
+    {
+        printf("\nApelido\n");
+        printf("> ");
+        scanf("%23s", temp.apelido);
+    
+        if ((check = userQuery(temp.apelido)) >= 0)
+            printf("\nNome já existe no banco de dados\n");
+    }
+    while (check >= 0);
+    //userQuery retorna negativo caso não exista o usuário
+
     printf("\nEmail\n");
     printf("> ");
     scanf("%31s", temp.email);
@@ -80,7 +99,149 @@ void UserAdd()
     }
 }
 
-void JogoAdd()
+void userEdit()
+{
+    int posicao;
+
+        printf("Digite o apelido do usuario:\n");
+        char temp[24];
+        printf("> ");
+        scanf("%23s", temp);
+    
+    if ((posicao = userQuery(temp)) >= 0)
+    {
+            int escolha = 0;
+            while (escolha != 999)
+                {
+                printf("\nVocê está no modo edição\n");
+                printf("\nDigite o campo que gostaria de editar (1. Apelido, 2. Email, 3. Data de Nascimento, 4. País, 999. Sair da edição)\n");
+                scanf("%d", &escolha);
+                switch (escolha)
+                {
+                case 1:
+                    char temp[24];
+                    printf("\nDigite o nome:\n");
+                    printf("> ");
+                    scanf("%23s", temp);
+
+                    // Confere se o nome já existe no banco de dados
+                    if (userQuery(temp) >= 0) printf("\nNome já existe\n");
+                    else
+                    {
+                        strcpy(usuarios.lista[posicao].apelido, temp);
+                        printf("\nNome editado com sucesso\n");
+                    }
+
+                    break;
+                case 2:
+                    printf("\nDigite o email:\n");
+                    printf("> ");
+                    scanf("%23s", usuarios.lista[posicao].email);
+                    printf("\nEmail editado com sucesso\n");
+                    break;
+                case 3:
+                    printf("\nDigite a data de nascimento:\n");
+                    printf("> ");
+                    scanf("%23s", usuarios.lista[posicao].nascimento);
+                    printf("\nNascimento editado com sucesso\n");
+                    break;
+                case 4:
+                    printf("\nDigite o país:\n");
+                    printf("> ");
+                    scanf("%23s", usuarios.lista[posicao].pais);
+                    printf("\nPaís editado com sucesso\n");
+                    break;
+                case 999:
+                    break;
+                default:
+                    printf("\nComando não encontrado\n");
+                    break;
+                }
+            }
+    }
+    else printf("\nNome não encontrado\n");
+}
+
+void userEdit()
+{
+    int posicao;
+
+        printf("Digite o apelido do usuario:\n");
+        char temp[24];
+        printf("> ");
+        scanf("%23s", temp);
+    
+    if ((posicao = userQuery(temp)) >= 0)
+    {
+            int escolha = 0;
+            while (escolha != 999)
+                {
+                printf("\nVocê está no modo edição\n");
+                printf("\nDigite o campo que gostaria de editar (1. Apelido, 2. Email, 3. Data de Nascimento, 4. País, 999. Sair da edição)\n");
+                scanf("%d", &escolha);
+                switch (escolha)
+                {
+                case 1:
+                    char temp[24];
+                    printf("\nDigite o nome:\n");
+                    printf("> ");
+                    scanf("%23s", temp);
+
+                    // Confere se o nome já existe no banco de dados
+                    if (userQuery(temp) >= 0) printf("\nNome já existe\n");
+                    else
+                    {
+                        strcpy(usuarios.lista[posicao].apelido, temp);
+                        printf("\nNome editado com sucesso\n");
+                    }
+
+                    break;
+                case 2:
+                    printf("\nDigite o email:\n");
+                    printf("> ");
+                    scanf("%23s", usuarios.lista[posicao].email);
+                    printf("\nEmail editado com sucesso\n");
+                    break;
+                case 3:
+                    printf("\nDigite a data de nascimento:\n");
+                    printf("> ");
+                    scanf("%23s", usuarios.lista[posicao].nascimento);
+                    printf("\nNascimento editado com sucesso\n");
+                    break;
+                case 4:
+                    printf("\nDigite o país:\n");
+                    printf("> ");
+                    scanf("%23s", usuarios.lista[posicao].pais);
+                    printf("\nPaís editado com sucesso\n");
+                    break;
+                case 999:
+                    break;
+                default:
+                    printf("\nComando não encontrado\n");
+                    break;
+                }
+            }
+    }
+    else printf("\nNome não encontrado\n");
+}
+
+void userDelete()
+{
+    int posicao;
+
+    printf("Digite o apelido do usuario:\n");
+    char temp[24];
+    printf("> ");
+    scanf("%23s", temp);
+    
+    if ((posicao = userQuery(temp)) >= 0)
+    {
+        
+    }
+    else printf("\nNome não encontrado\n");
+}
+
+void jogoAdd()
 {
     struct Jogo temp;
 
@@ -114,24 +275,24 @@ void dump() // Temporario para debugar com mais facilidade comando 123
     {
         printf("\nJogos\n");
         for (int i = 0; i < jogos.tamanho; i++){
-            printf("---\n")
+            printf("---\n");
             printf("Nome: %s\n", jogos.lista[i].nome);
             printf("desenvolvedora: %s\n", jogos.lista[i].desenvolvedora);
             printf("data_lancamento: %s\n", jogos.lista[i].data_lancamento);
             printf("plataforma: %s\n", jogos.lista[i].plataforma);
-            printf("---\n")
+            printf("---\n");
         }
     }
     if (usuarios.tamanho != 0)
     {
         printf("\nUsuarios\n");
         for (int i = 0; i < usuarios.tamanho; i++){
-            printf("---\n")
+            printf("---\n");
             printf("Apelido: %s\n", usuarios.lista[i].apelido);
             printf("Email: %s\n", usuarios.lista[i].email);
             printf("nascimento: %s\n", usuarios.lista[i].nascimento);
             printf("pais: %s\n", usuarios.lista[i].pais);
-            printf("---\n")
+            printf("---\n");
         }
     }
 }
@@ -145,10 +306,13 @@ void interpretador(int prompt)
             printf("%s", ajuda);
             break;
         case 1:
-            UserAdd();
+            userAdd();
+            break;
+        case 2:
+            userEdit();
             break;
         case 4:
-            JogoAdd();
+            jogoAdd();
             break;
         case 123:
             dump();
