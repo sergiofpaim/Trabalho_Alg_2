@@ -52,6 +52,32 @@ struct Usuarios usuarios;
 struct Jogos jogos;
 struct Recordes recordes;
 
+char* formatarTempo(unsigned long long int ms) 
+{
+    unsigned long long horas, minutos, segundos, milisecundos;
+
+    horas = ms / 3600000ULL;
+    minutos = (ms % 3600000ULL) / 60000ULL;
+    segundos = (ms % 60000ULL) / 1000ULL;
+    milisecundos = ms % 1000ULL;
+
+    char *saida = malloc(13);
+    snprintf(saida, 13, "%02llu:%02llu:%02llu:%03llu",
+             horas, minutos, segundos, milisecundos);
+
+    return saida;
+}
+
+char* formatarData(time_t data)
+{
+    struct tm *tm_info = localtime(&data);
+    char *saida = malloc(11);
+
+    strftime(saida, 11, "%d/%m/%Y", tm_info);
+
+    return saida;
+}
+
 int userQuery(char *identificacao)
 {
     for (int i = 0; i < usuarios.tamanho; i++)
@@ -254,7 +280,7 @@ void consulta()
     consulta.lista = (struct Recorde*) malloc(consulta.tamanho * sizeof(struct Recorde));
 
     printf("\nDigite a sua consulta neste formato <id_jogador nome_jogo identificacao_recorde> ou '*' para todos daquela posicao (no caso de busca de recorde, colocar '*' em jogador e jogo)\n");
-    scanf("%s %s %s", nomeJogador, nomeJogo, identificacao_recorde);
+    scanf("%23s %23s %31s", nomeJogador, nomeJogo, identificacao_recorde);
 
     if (identificacao_recorde[0] != '*')
     {
@@ -265,20 +291,51 @@ void consulta()
                 consulta.lista = (struct Recorde*) realloc(consulta.lista, ++consulta.tamanho * sizeof(struct Recorde));
                 consulta.lista[consulta.tamanho - 1] = recordes.lista[i];
             }
-            else printf("\nRecorde não encontrado\n");
+
+        if (consulta.tamanho == 0) printf("\nRecorde não encontrado\n");
     }
     else if (nomeJogador[0] != '*' && nomeJogo[0] != '*' && identificacao_recorde[0] == '*')
     {
         int posicao;
-        if ((posicao = recordeQuery(identificacao_recorde)) >= 0)
+        if ((posicao = recordeQuery(identificacao_recorde)) >= 0) 
+            //recordeQuery retorna negativo caso não exista o recorde
             {
                 consulta.lista = (struct Recorde*) realloc(consulta.lista, ++consulta.tamanho * sizeof(struct Recorde));
                 consulta.lista[consulta.tamanho - 1] = recordes.lista[posicao];
             }
             else printf("\nRecorde não encontrado\n");
     }
-    else
-        dump();
+    else dump();
+
+    // "Recordes:\n" 11
+    // "1. [identificador] [nomeJogador] [pais] [jogo] [tempo] [data_registro]\n" 11 + 24 + 12 + 24 + 12 + 10 = 93 * consulta.tamanho 
+
+    const int TAMANHO_LINHA_RECORDE = 128;
+    int tamanho_buffer = 11 + TAMANHO_LINHA_RECORDE * consulta.tamanho; 
+    char *buffer = malloc(tamanho_buffer * sizeof(char));
+    char tmp[TAMANHO_LINHA_RECORDE];
+
+    for (int i = 0; i < consulta.tamanho; i++)
+    {
+        char *tempo_str = formatarTempo(consulta.lista[i].tempo);
+        char *data_str = formatarData(consulta.lista[i].data_registro);
+        
+        snprintf(tmp, sizeof(tmp), 
+                 "%d. %s %s %s %s %s %s\n", 
+                 consulta.lista[i].identificacao, 
+                 consulta.lista[i].usuario->apelido, 
+                 consulta.lista[i].usuario->pais, 
+                 consulta.lista[i].jogo->nome, 
+                 tempo_str, 
+                 data_str);
+        
+        strncat(buffer, tmp, sizeof(buffer) - strlen(buffer) - 1);
+        
+        free(tempo_str);
+        free(data_str);
+    }
+
+    printf("%s", buffer);
 }
 
 void interpretador(int prompt)
