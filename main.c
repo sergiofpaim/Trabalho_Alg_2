@@ -178,8 +178,10 @@ void usuarioAdd()
     
         if ((nomeExistente = usuarioQuery(temp.apelido)) >= 0)
             printf("\nNome já existe no banco de dados\n");
-    }
-    while (nomeExistente >= 0);
+        else
+            break;
+    } 
+    while (1);
 
     printf("\nEmail\n");
     printf("\n> ");
@@ -193,8 +195,10 @@ void usuarioAdd()
         
         if (validarData(temp.nascimento) != 1) 
         printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
+        else
+            break;
     } 
-    while (validarData(temp.nascimento) != 1);
+    while (1);
 
     printf("\nPaís\n");
     printf("\n> ");
@@ -213,7 +217,6 @@ void usuarioAdd()
 void jogoAdd()
 {
     struct Jogo temp;
-    int jogoExistente = 0;
 
     printf("\nDigite as informações do jogo:\n");
 
@@ -223,10 +226,12 @@ void jogoAdd()
         printf("\n> ");
         scanf("%23s", temp.nome);
 
-        if ((jogoExistente = jogoQuery(temp.nome)) >= 0) 
+        if ((jogoQuery(temp.nome)) >= 0) 
             printf("\nO jogo já existe no banco de dados\n");
+        else
+            break;
     } 
-    while (jogoExistente >= 0);
+    while (1);
 
     printf("\nDesenvolvedores\n");
     printf("\n> ");
@@ -239,15 +244,18 @@ void jogoAdd()
         scanf("%10s", temp.data_lancamento);
         
         if (validarData(temp.data_lancamento) != 1) 
-        printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
+            printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
+        else
+            break;
     } 
-    while (validarData(temp.data_lancamento) != 1);
+    while (1);
 
     printf("\nGênero\n");
     printf("\n> ");
     scanf("%11s", temp.genero);
 
     jogos.lista = (struct Jogo *) realloc(jogos.lista, ++jogos.tamanho * sizeof(struct Jogo));
+
     if (jogos.lista != NULL) jogos.lista[jogos.tamanho - 1] = temp;
     else
     {
@@ -423,6 +431,7 @@ void jogoEdit()
                     printf("\nDigite o nome da desenvolvedora: \n");
                     printf("\n> ");
                     scanf("%31s", jogos.lista[posicao].desenvolvedora);
+                    printf("\nDesenvolvedora editada com sucesso\n");
                     break;
                 case 3:
                     do 
@@ -437,6 +446,7 @@ void jogoEdit()
                         else
                         {
                             strcpy(jogos.lista[posicao].data_lancamento, temp.data_lancamento);
+                            printf("\nLançamento editado com sucesso\n");
                             break;
                         }
                     } 
@@ -446,6 +456,7 @@ void jogoEdit()
                     printf("\nDigite o genero do jogo: \n");
                     printf("\n> ");
                     scanf("%11s", jogos.lista[posicao].genero);
+                    printf("\nGenero editado com sucesso\n");
                     break;
                 case 999:
                     break;
@@ -486,7 +497,7 @@ void recordeEdit()
                     if (usuarioQuery(temp) < 0) printf("\nUsuário não encontrado\n");
                     else { 
                         strcpy(recordes.lista[posicao].usuario, usuarios.lista[usuarioQuery(temp)].apelido);
-                        printf("\nRecorde editado com sucesso!\n");
+                        printf("\nUsuario editado com sucesso!\n");
                     }
                     break;
                 case 2:
@@ -497,7 +508,7 @@ void recordeEdit()
                     else
                     {
                         strcpy(recordes.lista[posicao].jogo, jogos.lista[jogoQuery(temp)].nome);
-                        printf("\nRecorde editado com sucesso!\n");
+                        printf("\nNome editado com sucesso!\n");
                     }
                     break;
                 case 3:
@@ -507,10 +518,22 @@ void recordeEdit()
                     break;
                 case 4:
                     int horas, minutos, segundos, milisecundos;
-                    printf("\nDigite o tempo (HH:MM:SS:mmm): \n");
-                    printf("\n> ");
-                    scanf("%d:%d:%d:%d", &horas, &minutos, &segundos, &milisecundos);
-                    recordes.lista[posicao].tempo = horas * 3600000ULL + minutos * 60000ULL + segundos * 1000ULL + milisecundos; 
+                    do 
+                    {
+                        printf("\nTempo da Run (formato hh:mm:ss:msms):\n");
+                        printf("\n> ");
+                        scanf("%d:%d:%d:%d", &horas, &minutos, &segundos, &milisecundos);
+
+                        if (validarTempo(horas, minutos, segundos, milisecundos) != 1) 
+                            printf("\nTempo em formato inválido, digite no formato (hh:mm:ss:msms)\n");
+                        else
+                        {
+                            recordes.lista[posicao].tempo = horas * 3600000ULL + minutos * 60000ULL + segundos * 1000ULL + milisecundos; 
+                            printf("\nTempo editado com sucesso!\n");
+                            break;
+                        }
+                    } 
+                    while (1);
                     break;
                 case 999:
                     break;
