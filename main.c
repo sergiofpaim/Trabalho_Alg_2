@@ -148,9 +148,9 @@ struct Resultados recordeQuery(char* nomeJogador, char* nomeJogo, char* identifi
     resultados.tamanho = 0;
     resultados.lista = (int *) malloc(resultados.tamanho * sizeof(int));
     for (int i = 0; i <= recordes.tamanho - 1; i++){
-        int achouId = (strcmp(identificacao_recorde, "*") == 0) || (recordes.lista[i].identificacao == atoi(identificacao_recorde));
         int achouJogador = (strcmp(nomeJogador, "*") == 0) || (strcmp(nomeJogador, usuarios.lista[i].apelido) == 0);
         int achouJogo = (strcmp(nomeJogo, "*") == 0) || (strcmp(nomeJogo, jogos.lista[i].nome) == 0);
+        int achouId = (strcmp(identificacao_recorde, "*") == 0) || (recordes.lista[i].identificacao == atoi(identificacao_recorde));
 
         if (achouId && achouJogador && achouJogo){
             resultados.lista = (int*) realloc(resultados.lista, ++resultados.tamanho * sizeof(int));
@@ -651,6 +651,7 @@ void dump() // temporario para debugar com mais facilidade - comando 123
     }
 }
 
+//TODO: Resolver consulta que encontra apenas um resultado
 void consulta()
 {
     char nomeJogador[24];
@@ -664,6 +665,7 @@ void consulta()
     printf("\nDigite a sua consulta neste formato <id_jogador nome_jogo identificacao_recorde> ou '*' para todos daquela posicao\n");
     printf("\n> ");
     scanf("%23s %23s %31s", nomeJogador, nomeJogo, identificacao_recorde);
+
     struct Resultados resultados = recordeQuery(nomeJogador, nomeJogo, identificacao_recorde);
 
     printf("Resultados encontrados: %d\n", resultados.tamanho);
@@ -703,7 +705,7 @@ void consulta()
                  "%d. %s %s %s %s %s\n", 
                  consulta.lista[i].identificacao, 
                  consulta.lista[i].usuario, 
-                 consulta.lista[i].usuario, 
+                 consulta.lista[i].plataforma, 
                  consulta.lista[i].jogo, 
                  tempo_str, 
                  data_str);
