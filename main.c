@@ -57,8 +57,6 @@ struct Resultados
 struct Usuarios usuarios;
 struct Jogos jogos;
 struct Recordes recordes;
-int idrecordes;
-
 
 int gerarId(int min, int max) {
     return min + rand() % (max - min + 1);
@@ -667,6 +665,8 @@ void consulta()
     printf("\n> ");
     scanf("%23s %23s %31s", nomeJogador, nomeJogo, identificacao_recorde);
     struct Resultados resultados = recordeQuery(nomeJogador, nomeJogo, identificacao_recorde);
+
+    printf("Resultados encontrados: %d\n", resultados.tamanho);
     
     if (resultados.tamanho == 0)
     {
@@ -765,7 +765,7 @@ void interpretador(int prompt)
     }
 }
 
-void teste() 
+void casoDeTeste() 
 {
     struct Usuario casoUsuario;
     struct Jogo casoJogo;
@@ -779,49 +779,60 @@ void teste()
             strcpy(casoUsuario.nascimento, "20-08-1999");
             strcpy(casoUsuario.pais, "Portugal");
 
-            strcpy(casoJogo.nome, "Metroid Dread");
+            strcpy(casoJogo.nome, "Metroid");
             strcpy(casoJogo.desenvolvedora, "MercurySteam");
             strcpy(casoJogo.data_lancamento, "08-10-2021");
-            strcpy(casoJogo.genero, "Ação/Aventura");
+            strcpy(casoJogo.genero, "AÃ§Ã£o/Aventura");
 
             strcpy(casoRecorde.usuario, casoUsuario.apelido);
             strcpy(casoRecorde.jogo, casoJogo.nome);
             strcpy(casoRecorde.plataforma, "PS3");
+            casoRecorde.data_registro = time(NULL);
+            casoRecorde.identificacao = gerarId(1000, 9999); 
             casoRecorde.tempo = 1 * 3600000 + 32 * 60000ULL + 51 * 1000ULL + 523;
 
-        } else if (i == 1) 
+        }
+        else if (i == 1) 
         {
             strcpy(casoUsuario.apelido, "sergiopaim");
             strcpy(casoUsuario.email, "paimsergio@gmail.com");
             strcpy(casoUsuario.nascimento, "30-08-2004");
-            strcpy(casoUsuario.pais, "Etiópia");
+            strcpy(casoUsuario.pais, "EtiÃ³pia");
 
             strcpy(casoJogo.nome, "Celeste");
             strcpy(casoJogo.desenvolvedora, "Maddy Makes Games");
             strcpy(casoJogo.data_lancamento, "25-01-2018");
-            strcpy(casoJogo.genero, "Ação");
+            strcpy(casoJogo.genero, "AÃ§Ã£o");
 
             strcpy(casoRecorde.usuario, casoUsuario.apelido);
             strcpy(casoRecorde.jogo, casoJogo.nome);
-            strcpy(casoRecorde.plataforma, "PC/PS4");
+            strcpy(casoRecorde.plataforma, "PC");
+            casoRecorde.data_registro = time(NULL);
+            casoRecorde.identificacao = gerarId(1000, 9999); 
+
             casoRecorde.tempo = 0 * 3600000ULL + 36 * 60000ULL + 12 * 1000ULL + 138;
-        } else if (i == 2) 
+        }
+        else if (i == 2) 
         {
             strcpy(casoUsuario.apelido, "joaocosta");
             strcpy(casoUsuario.email, "costajoao@gmail.com");
             strcpy(casoUsuario.nascimento, "09-12-2002");
-            strcpy(casoUsuario.pais, "Suécia");
+            strcpy(casoUsuario.pais, "Suï¿½cia");
 
             strcpy(casoJogo.nome, "Dark Souls");
             strcpy(casoJogo.desenvolvedora, "FromSoftware");
             strcpy(casoJogo.data_lancamento, "22-09-2011");
-            strcpy(casoJogo.genero, "RPG Ação/Fantasia");
+            strcpy(casoJogo.genero, "RPG AÃ§Ã£o/Fantasia");
 
             strcpy(casoRecorde.usuario, casoUsuario.apelido);
             strcpy(casoRecorde.jogo, casoJogo.nome);
-            strcpy(casoRecorde.plataforma, "PS3/Xbox 360");
+            strcpy(casoRecorde.plataforma, "Xbox 360");
+            casoRecorde.data_registro = time(NULL);
+            casoRecorde.identificacao = gerarId(1000, 9999); 
+
             casoRecorde.tempo = 0 * 3600000ULL + 31 * 60000ULL + 59 * 1000ULL + 364;
-        } else if (i == 3){
+        }
+        else if (i == 3){
             strcpy(casoUsuario.apelido, "vitorcarvalho");
             strcpy(casoUsuario.email, "carvalhovitor@gmail.com");
             strcpy(casoUsuario.nascimento, "25-06-1998");
@@ -830,27 +841,33 @@ void teste()
             strcpy(casoJogo.nome, "Cuphead");
             strcpy(casoJogo.desenvolvedora, "Studio MDHR");
             strcpy(casoJogo.data_lancamento, "29-09-2017");
-            strcpy(casoJogo.genero, "Ação");
+            strcpy(casoJogo.genero, "AÃ§Ã£o");
 
             strcpy(casoRecorde.usuario, casoUsuario.apelido);
             strcpy(casoRecorde.jogo, casoJogo.nome);
-            strcpy(casoRecorde.plataforma, "PS4/Xbox One");
+            strcpy(casoRecorde.plataforma, "Xbox One");
+            casoRecorde.data_registro = time(NULL);
+            casoRecorde.identificacao = gerarId(1000, 9999); 
+
             casoRecorde.tempo = 1 * 3600000ULL + 1 * 60000ULL + 48 * 1000ULL + 689;
-        } else {
+        }
+        else {
             strcpy(casoUsuario.apelido, "pedrolage");
             strcpy(casoUsuario.email, "lagepedro@gmail.com");
             strcpy(casoUsuario.nascimento, "01-01-1996");
             strcpy(casoUsuario.pais, "Argentina");
 
-
             strcpy(casoJogo.nome, "Mirror's Edge");
             strcpy(casoJogo.desenvolvedora, "DICE");
             strcpy(casoJogo.data_lancamento, "11-11-2008");
-            strcpy(casoJogo.genero, "Ação/Aventura");
+            strcpy(casoJogo.genero, "AÃ§Ã£o/Aventura");
 
             strcpy(casoRecorde.usuario, casoUsuario.apelido);
             strcpy(casoRecorde.jogo, casoJogo.nome);
-            strcpy(casoRecorde.plataforma, "PC/PS3");
+            strcpy(casoRecorde.plataforma, "PS3");
+            casoRecorde.data_registro = time(NULL);
+            casoRecorde.identificacao = gerarId(1000, 9999); 
+
             casoRecorde.tempo = 0 * 3600000ULL + 47 * 60000ULL + 35 * 1000ULL + 987;
         }
 
@@ -873,8 +890,6 @@ void main()
     // Inicializa o gerador com a hora atual
     srand(time(NULL)); 
 
-    idrecordes = 0;
-
     usuarios.tamanho = 0;
     usuarios.lista = (struct Usuario*)malloc(usuarios.tamanho * sizeof(struct Usuario));
 
@@ -884,7 +899,7 @@ void main()
     recordes.tamanho = 0;
     recordes.lista = (struct Recorde*)malloc(recordes.tamanho * sizeof(struct Recorde));
 
-    teste();
+    casoDeTeste();
 
     int prompt = 0;
 
