@@ -517,9 +517,9 @@ void recordeEdit()
                     scanf("%10s", recordes.lista[posicao].plataforma);
                     break;
                 case 4:
-                    int horas, minutos, segundos, milisecundos;
                     do 
                     {
+                        int horas, minutos, segundos, milisecundos;
                         printf("\nTempo da Run (formato hh:mm:ss:msms):\n");
                         printf("\n> ");
                         scanf("%d:%d:%d:%d", &horas, &minutos, &segundos, &milisecundos);
@@ -765,6 +765,109 @@ void interpretador(int prompt)
     }
 }
 
+void teste() 
+{
+    struct Usuario casoUsuario;
+    struct Jogo casoJogo;
+    struct Recorde casoRecorde;
+    
+    for (int i = 0; i < 5; i++) {
+        if (i == 0)
+        {
+            strcpy(casoUsuario.apelido, "joaofernandes");
+            strcpy(casoUsuario.email, "fernandesjoao@gmail.com");
+            strcpy(casoUsuario.nascimento, "20-08-1999");
+            strcpy(casoUsuario.pais, "Portugal");
+
+            strcpy(casoJogo.nome, "Metroid Dread");
+            strcpy(casoJogo.desenvolvedora, "MercurySteam");
+            strcpy(casoJogo.data_lancamento, "08-10-2021");
+            strcpy(casoJogo.genero, "Ação/Aventura");
+
+            strcpy(casoRecorde.usuario, casoUsuario.apelido);
+            strcpy(casoRecorde.jogo, casoJogo.nome);
+            strcpy(casoRecorde.plataforma, "PS3");
+            casoRecorde.tempo = 1 * 3600000 + 32 * 60000ULL + 51 * 1000ULL + 523;
+
+        } else if (i == 1) 
+        {
+            strcpy(casoUsuario.apelido, "sergiopaim");
+            strcpy(casoUsuario.email, "paimsergio@gmail.com");
+            strcpy(casoUsuario.nascimento, "30-08-2004");
+            strcpy(casoUsuario.pais, "Etiópia");
+
+            strcpy(casoJogo.nome, "Celeste");
+            strcpy(casoJogo.desenvolvedora, "Maddy Makes Games");
+            strcpy(casoJogo.data_lancamento, "25-01-2018");
+            strcpy(casoJogo.genero, "Ação");
+
+            strcpy(casoRecorde.usuario, casoUsuario.apelido);
+            strcpy(casoRecorde.jogo, casoJogo.nome);
+            strcpy(casoRecorde.plataforma, "PC/PS4");
+            casoRecorde.tempo = 0 * 3600000ULL + 36 * 60000ULL + 12 * 1000ULL + 138;
+        } else if (i == 2) 
+        {
+            strcpy(casoUsuario.apelido, "joaocosta");
+            strcpy(casoUsuario.email, "costajoao@gmail.com");
+            strcpy(casoUsuario.nascimento, "09-12-2002");
+            strcpy(casoUsuario.pais, "Suécia");
+
+            strcpy(casoJogo.nome, "Dark Souls");
+            strcpy(casoJogo.desenvolvedora, "FromSoftware");
+            strcpy(casoJogo.data_lancamento, "22-09-2011");
+            strcpy(casoJogo.genero, "RPG Ação/Fantasia");
+
+            strcpy(casoRecorde.usuario, casoUsuario.apelido);
+            strcpy(casoRecorde.jogo, casoJogo.nome);
+            strcpy(casoRecorde.plataforma, "PS3/Xbox 360");
+            casoRecorde.tempo = 0 * 3600000ULL + 31 * 60000ULL + 59 * 1000ULL + 364;
+        } else if (i == 3){
+            strcpy(casoUsuario.apelido, "vitorcarvalho");
+            strcpy(casoUsuario.email, "carvalhovitor@gmail.com");
+            strcpy(casoUsuario.nascimento, "25-06-1998");
+            strcpy(casoUsuario.pais, "China");
+
+            strcpy(casoJogo.nome, "Cuphead");
+            strcpy(casoJogo.desenvolvedora, "Studio MDHR");
+            strcpy(casoJogo.data_lancamento, "29-09-2017");
+            strcpy(casoJogo.genero, "Ação");
+
+            strcpy(casoRecorde.usuario, casoUsuario.apelido);
+            strcpy(casoRecorde.jogo, casoJogo.nome);
+            strcpy(casoRecorde.plataforma, "PS4/Xbox One");
+            casoRecorde.tempo = 1 * 3600000ULL + 1 * 60000ULL + 48 * 1000ULL + 689;
+        } else {
+            strcpy(casoUsuario.apelido, "pedrolage");
+            strcpy(casoUsuario.email, "lagepedro@gmail.com");
+            strcpy(casoUsuario.nascimento, "01-01-1996");
+            strcpy(casoUsuario.pais, "Argentina");
+
+
+            strcpy(casoJogo.nome, "Mirror's Edge");
+            strcpy(casoJogo.desenvolvedora, "DICE");
+            strcpy(casoJogo.data_lancamento, "11-11-2008");
+            strcpy(casoJogo.genero, "Ação/Aventura");
+
+            strcpy(casoRecorde.usuario, casoUsuario.apelido);
+            strcpy(casoRecorde.jogo, casoJogo.nome);
+            strcpy(casoRecorde.plataforma, "PC/PS3");
+            casoRecorde.tempo = 0 * 3600000ULL + 47 * 60000ULL + 35 * 1000ULL + 987;
+        }
+
+        jogos.tamanho++;
+        jogos.lista = (struct Jogo *) realloc(jogos.lista, jogos.tamanho * sizeof(struct Jogo));
+        jogos.lista[jogos.tamanho - 1] = casoJogo;
+
+        usuarios.tamanho++;
+        usuarios.lista = (struct Usuario *) realloc(usuarios.lista, usuarios.tamanho * sizeof(struct Usuario));
+        usuarios.lista[usuarios.tamanho - 1] = casoUsuario;
+
+        recordes.tamanho++;
+        recordes.lista = (struct Recorde *) realloc(recordes.lista, recordes.tamanho * sizeof(struct Recorde));
+        recordes.lista[recordes.tamanho - 1] = casoRecorde;
+    }
+}
+
 void main()
 {
     // Inicializa o gerador com a hora atual
@@ -780,6 +883,8 @@ void main()
 
     recordes.tamanho = 0;
     recordes.lista = (struct Recorde*)malloc(recordes.tamanho * sizeof(struct Recorde));
+
+    teste();
 
     int prompt = 0;
 
