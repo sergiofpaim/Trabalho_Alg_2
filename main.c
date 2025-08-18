@@ -21,8 +21,8 @@ struct Jogo
 
 struct Recorde
 {
-    struct Usuario *usuario;
-    struct Jogo *jogo;
+    char usuario[24];
+    char jogo[24];
     char data_lancamento[24];
     char plataforma[32];
     unsigned long long int tempo;
@@ -108,8 +108,8 @@ struct Resultados recordeQuery(char* nomeJogador, char* nomeJogo, char* identifi
     resultados.lista = (int *) malloc(resultados.tamanho * sizeof(int));
     for (int i = 0; i <= recordes.tamanho - 1; i++){
         int achouId = (strcmp(identificacao_recorde, "*") == 0) || (recordes.lista[i].identificacao == atoi(identificacao_recorde));
-        int achouJogador = (strcmp(nomeJogador, "*") == 0) || (strcmp(nomeJogador, recordes.lista[i].usuario->apelido) == 0);
-        int achouJogo = (strcmp(nomeJogo, "*") == 0) || (strcmp(nomeJogo, recordes.lista[i].jogo->nome) == 0);
+        int achouJogador = (strcmp(nomeJogador, "*") == 0) || (strcmp(nomeJogador, usuarios.lista[i].apelido) == 0);
+        int achouJogo = (strcmp(nomeJogo, "*") == 0) || (strcmp(nomeJogo, jogos.lista[i].nome) == 0);
 
         if (achouId && achouJogador && achouJogo){
             resultados.lista = (int*) realloc(resultados.lista, ++resultados.tamanho * sizeof(int));
@@ -163,7 +163,7 @@ void jogoAdd()
     struct Jogo temp;
     int jogoExistente = 0;
 
-    printf("Digite as informações do jogo:\n");
+    printf("Digite as informaï¿½ï¿½es do jogo:\n");
 
     do 
     {
@@ -172,7 +172,7 @@ void jogoAdd()
         scanf("%23s", temp.nome);
 
         if ((jogoExistente = jogoQuery(temp.nome)) >= 0) 
-            printf("\nO jogo já existe no banco de dados\n");
+            printf("\nO jogo jï¿½ existe no banco de dados\n");
     } 
     while (jogoExistente >= 0);
 
@@ -201,23 +201,23 @@ void recordeAdd()
     char player[24], jogo[24];
     int horas, minutos, segundos, milisecundos;
 
-    printf("\nDigite as informações do recorde:\n");
-    printf("Nome do usuário: \n");
+    printf("\nDigite as informaï¿½ï¿½es do recorde:\n");
+    printf("Nome do usuï¿½rio: \n");
     printf("> ");
     scanf("%s", player);
-    if (userQuery(player) >= 0) temp.usuario = &(usuarios.lista[userQuery(player)]);
+    if (userQuery(player) >= 0) strcpy(temp.usuario, usuarios.lista[userQuery(player)].apelido);
     else
     {
-        printf("Usuário não encontrado!\n");
+        printf("Usuï¿½rio nï¿½o encontrado!\n");
         return;
     }
     printf("Nome do jogo:\n");
     printf("> ");
     scanf("%s", jogo);
-    if (jogoQuery(jogo) >= 0) temp.jogo = &(jogos.lista[jogoQuery(jogo)]);
+    if (jogoQuery(jogo) >= 0) strcpy(temp.jogo,jogos.lista[jogoQuery(jogo)].nome);
     else 
     {
-        printf("Jogo não encontrado!\n");
+        printf("Jogo nï¿½o encontrado!\n");
         return;
     }
     printf("Plataforma do Recorde:\n");
@@ -235,7 +235,7 @@ void recordeAdd()
     if (recordes.lista != NULL) recordes.lista[recordes.tamanho - 1] = temp;
     else
     {
-        printf("Erro ao alocar memória para o recorde\n");
+        printf("Erro ao alocar memï¿½ria para o recorde\n");
         recordes.tamanho--;
     }
 }
@@ -318,8 +318,8 @@ void jogoEdit()
         int escolha = 0;
         while (escolha != 999) 
         {
-            printf("\nVocê está no modo edição!\n");
-            printf("Digite o campo que gostaria de editar: (1. Nome, 2. Desenvolvedora, 3. Data de Lançamento, 4. Plataforma, 999. Sair do modo edição)\n");
+            printf("\nVocï¿½ estï¿½ no modo ediï¿½ï¿½o!\n");
+            printf("Digite o campo que gostaria de editar: (1. Nome, 2. Desenvolvedora, 3. Data de Lanï¿½amento, 4. Plataforma, 999. Sair do modo ediï¿½ï¿½o)\n");
             printf("> ");
             scanf("%d", &escolha);
             switch (escolha) 
@@ -329,7 +329,7 @@ void jogoEdit()
                     printf("> ");
                     char temp[24];
                     scanf("%s", &temp);
-                    if (jogoQuery(temp) >= 0) printf("Nome já registrado!\n");
+                    if (jogoQuery(temp) >= 0) printf("Nome jï¿½ registrado!\n");
                     else { 
                         strcpy(jogos.lista[posicao].nome, temp);
                         printf("Nome registrado com sucesso!\n");
@@ -341,7 +341,7 @@ void jogoEdit()
                     scanf("%31s", jogos.lista[posicao].desenvolvedora);
                     break;
                 case 3:
-                    printf("Digite a data de lançamento: \n");
+                    printf("Digite a data de lanï¿½amento: \n");
                     printf("> ");
                     scanf("%10s", jogos.lista[posicao].data_lancamento);
                     break;
@@ -353,11 +353,11 @@ void jogoEdit()
                 case 999:
                     break;
                 default: 
-                    printf("\nComando não encontrado\n");
+                    printf("\nComando nï¿½o encontrado\n");
                     break;
             }
         }
-    } else printf("Jogo não encontrado!\n");
+    } else printf("Jogo nï¿½o encontrado!\n");
 }
 
 void recordeEdit()
@@ -374,8 +374,8 @@ void recordeEdit()
         int posicao = resultado.lista[0];
         while (escolha != 999) 
         {
-            printf("\nVocê está no modo edição!\n");
-            printf("Digite o campo que gostaria de editar: (1. Usuário, 2. Jogo, 3. plataforma, 4. Tempo, 999. Sair do modo edição)\n");
+            printf("\nVocï¿½ estï¿½ no modo ediï¿½ï¿½o!\n");
+            printf("Digite o campo que gostaria de editar: (1. Usuï¿½rio, 2. Jogo, 3. plataforma, 4. Tempo, 999. Sair do modo ediï¿½ï¿½o)\n");
             printf("> ");
             scanf("%d", &escolha);
             char temp[32];
@@ -386,9 +386,9 @@ void recordeEdit()
                     printf("Digite o usuario desejado: \n");
                     printf("> ");
                     scanf("%s", &temp);
-                    if (userQuery(temp) < 0) printf("Usuário não encontrado\n");
+                    if (userQuery(temp) < 0) printf("Usuï¿½rio nï¿½o encontrado\n");
                     else { 
-                        recordes.lista[posicao].usuario = &(usuarios.lista[userQuery(temp)]);
+                        strcpy(recordes.lista[posicao].usuario, usuarios.lista[userQuery(temp)].apelido);
                         printf("Recorde editado com sucesso!\n");
                     }
                     break;
@@ -396,10 +396,10 @@ void recordeEdit()
                     printf("Digite o nome do jogo: \n");
                     printf("> ");
                     scanf("%31s", temp);
-                    if (jogoQuery(temp) < 0) printf("Jogo não encontrado!\n");
+                    if (jogoQuery(temp) < 0) printf("Jogo nï¿½o encontrado!\n");
                     else
                     {
-                        recordes.lista[posicao].jogo = &(jogos.lista[jogoQuery(temp)]);
+                        strcpy(recordes.lista[posicao].jogo, jogos.lista[jogoQuery(temp)].nome);
                         printf("Recorde editado com sucesso!\n");
                     }
                     break;
@@ -418,14 +418,14 @@ void recordeEdit()
                 case 999:
                     break;
                 default: 
-                    printf("\nComando não encontrado\n");
+                    printf("\nComando nï¿½o encontrado\n");
                     break;
             }
         }
-    } else printf("Jogo não encontrado!\n");
+    } else printf("Jogo nï¿½o encontrado!\n");
 }
 
-//TODO: Arrumar a atualização dos ponteiros pós exclusão
+//TODO: Arrumar a atualizaï¿½ï¿½o dos ponteiros pï¿½s exclusï¿½o
 void userDelete()
 {
     int posicao;
@@ -435,24 +435,17 @@ void userDelete()
     printf("> ");
     scanf("%23s", temp);
     
-    struct Resultados resultados = recordeQuery(temp, "*", "*");
-    if (resultados.tamanho > 0)
-        if ((posicao = userQuery(temp)) >= 0)
-        {
-            struct Resultados resultados = recordeQuery(usuarios.lista[usuarios.tamanho - 1].apelido, "*", "*");
-            usuarios.lista[posicao] = usuarios.lista[usuarios.tamanho - 1]; 
-            usuarios.lista = (struct Usuario*) realloc(usuarios.lista, --usuarios.tamanho * sizeof(struct Usuario));
+    if ((posicao = userQuery(temp)) >= 0)
+    {
+        usuarios.lista[posicao] = usuarios.lista[usuarios.tamanho - 1]; 
+        usuarios.lista = (struct Usuario*) realloc(usuarios.lista, --usuarios.tamanho * sizeof(struct Usuario));
             
-            for (int i = 0; i < resultados.tamanho; i++) // Atualizando o ponteiro dos recordes
-                recordes.lista[resultados.lista[i]].usuario = &(usuarios.lista[posicao]);
-            
-            printf("Usuário deletado com sucesso!\n");
-        }
-        else printf("\nNome nÃ£o encontrado\n");
-    else printf("Usuário não pode ser deletado pois tem um recorde registrado com o id %d\n", recordes.lista[resultados.lista[0]].identificacao);
+        printf("Usuï¿½rio deletado com sucesso!\n");
+    }
+    else printf("\nNome nÃ£o encontrado\n");
 }
 
-//TODO: Arrumar a atualização dos ponteiros pós exclusão
+//TODO: Arrumar a atualizaï¿½ï¿½o dos ponteiros pï¿½s exclusï¿½o
 void jogoDelete() 
 {
     int posicao;
@@ -461,23 +454,15 @@ void jogoDelete()
     char nome[24];
     scanf("%23s", nome);
     struct Resultados resultados = recordeQuery("*", nome, "*");
-    
-    if (resultados.tamanho > 0)
+
+    if((posicao = jogoQuery(nome)))
     {
-        if((posicao = jogoQuery(nome)))
-        {
-            jogos.lista[posicao] = jogos.lista[jogos.tamanho - 1];
-            jogos.lista = (struct Jogo*) realloc (jogos.lista, --jogos.tamanho * sizeof(struct Jogo));
-            resultados = recordeQuery("*", jogos.lista[posicao].nome, "*");
-
-            for (int i = 0; i < resultados.tamanho; i++) // Atualizando o ponteiro dos recordes
-                recordes.lista[resultados.lista[i]].jogo = &(jogos.lista[posicao]);
-
-            printf("Jogo deletado com sucesso!\n");
-        }
-        else printf("Jogo não encontrado!\n");
+        jogos.lista[posicao] = jogos.lista[jogos.tamanho - 1];
+        jogos.lista = (struct Jogo*) realloc (jogos.lista, --jogos.tamanho * sizeof(struct Jogo));
+        resultados = recordeQuery("*", jogos.lista[posicao].nome, "*");
+        printf("Jogo deletado com sucesso!\n");
     }
-    else printf("Usuário não pode ser deletado pois tem um recorde registrado com o id %d\n", recordes.lista[resultados.lista[0]].identificacao);
+    else printf("Jogo nï¿½o encontrado!\n");
 }
 
 void recordeDelete() 
@@ -494,7 +479,7 @@ void recordeDelete()
         recordes.lista = (struct Recorde *) realloc(recordes.lista, --recordes.tamanho * sizeof(struct Recorde));
         printf("Recorde deletado com sucesso!\n");
     }
-    else printf("Recorde não encontrado!\n");
+    else printf("Recorde nï¿½o encontrado!\n");
 }
 
 void dump() // Temporario para debugar com mais facilidade comando 123
@@ -529,8 +514,8 @@ void dump() // Temporario para debugar com mais facilidade comando 123
         for (int i = 0; i < recordes.tamanho; i++){
             printf("---\n");
             printf("identificador: %d\n", recordes.lista[i].identificacao);
-            printf("Usuário: %s\n", recordes.lista[i].usuario->apelido);
-            printf("Jogo: %s\n", recordes.lista[i].jogo->nome);
+            printf("Usuï¿½rio: %s\n", recordes.lista[i].usuario);
+            printf("Jogo: %s\n", recordes.lista[i].jogo);
             printf("Plataforma: %s\n", recordes.lista[i].plataforma);
             printf("Tempo: %s\n", formatarTempo(recordes.lista[i].tempo));
             printf("Data de Registro: %s\n", formatarData(recordes.lista[i].tempo));
@@ -589,9 +574,9 @@ void consulta()
         snprintf(linha, sizeof(linha), 
                  "%d. %s %s %s %s %s\n", 
                  consulta.lista[i].identificacao, 
-                 consulta.lista[i].usuario->apelido, 
-                 consulta.lista[i].usuario->pais, 
-                 consulta.lista[i].jogo->nome, 
+                 consulta.lista[i].usuario, 
+                 consulta.lista[i].usuario, 
+                 consulta.lista[i].jogo, 
                  tempo_str, 
                  data_str);
 
