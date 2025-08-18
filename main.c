@@ -84,6 +84,7 @@ char* formatarData(time_t data)
     return saida;
 }
 
+// Confere se o usuário já existe no banco de dados
 int userQuery(char *identificacao)
 {
     for (int i = 0; i < usuarios.tamanho; i++)
@@ -92,7 +93,7 @@ int userQuery(char *identificacao)
     return -1;
 }
 
-
+// Confere se o jogo já existe no banco de dados
 int jogoQuery(char *identificacao) 
 {
     for (int i = 0; i < jogos.tamanho; i++) 
@@ -101,6 +102,7 @@ int jogoQuery(char *identificacao)
     return -1;
 }
 
+// Confere se o recorde já existe no banco de dados
 struct Resultados recordeQuery(char* nomeJogador, char* nomeJogo, char* identificacao_recorde)
 {
     struct Resultados resultados;
@@ -120,7 +122,7 @@ struct Resultados recordeQuery(char* nomeJogador, char* nomeJogo, char* identifi
     return resultados;
 }
 
-void userAdd()
+void usuarioAdd()
 {
     struct Usuario temp;;
     int nomeExistente = 0;
@@ -136,7 +138,6 @@ void userAdd()
             printf("\nNome já existe no banco de dados\n");
     }
     while (nomeExistente >= 0);
-    //userQuery retorna negativo caso não exista o usuário
 
     printf("\nEmail\n");
     printf("> ");
@@ -163,7 +164,7 @@ void jogoAdd()
     struct Jogo temp;
     int jogoExistente = 0;
 
-    printf("Digite as informa��es do jogo:\n");
+    printf("Digite as informações do jogo:\n");
 
     do 
     {
@@ -172,7 +173,7 @@ void jogoAdd()
         scanf("%23s", temp.nome);
 
         if ((jogoExistente = jogoQuery(temp.nome)) >= 0) 
-            printf("\nO jogo j� existe no banco de dados\n");
+            printf("\nO jogo já existe no banco de dados\n");
     } 
     while (jogoExistente >= 0);
 
@@ -201,14 +202,14 @@ void recordeAdd()
     char player[24], jogo[24];
     int horas, minutos, segundos, milisecundos;
 
-    printf("\nDigite as informa��es do recorde:\n");
-    printf("Nome do usu�rio: \n");
+    printf("\nDigite as informações do recorde:\n");
+    printf("Nome do usuário: \n");
     printf("> ");
     scanf("%s", player);
     if (userQuery(player) >= 0) strcpy(temp.usuario, usuarios.lista[userQuery(player)].apelido);
     else
     {
-        printf("Usu�rio n�o encontrado!\n");
+        printf("Usuário não encontrado!\n");
         return;
     }
     printf("Nome do jogo:\n");
@@ -217,7 +218,7 @@ void recordeAdd()
     if (jogoQuery(jogo) >= 0) strcpy(temp.jogo,jogos.lista[jogoQuery(jogo)].nome);
     else 
     {
-        printf("Jogo n�o encontrado!\n");
+        printf("Jogo não encontrado!\n");
         return;
     }
     printf("Plataforma do Recorde:\n");
@@ -235,12 +236,12 @@ void recordeAdd()
     if (recordes.lista != NULL) recordes.lista[recordes.tamanho - 1] = temp;
     else
     {
-        printf("Erro ao alocar mem�ria para o recorde\n");
+        printf("Erro ao alocar memória para o recorde\n");
         recordes.tamanho--;
     }
 }
 
-void userEdit()
+void usuarioEdit()
 {
     int posicao;
 
@@ -266,7 +267,6 @@ void userEdit()
                         char temp[24];
                         scanf("%23s", temp);
 
-                        // Confere se o nome já existe no banco de dados
                         if (userQuery(temp) >= 0) printf("\nNome já existe\n");
                         else
                         {
@@ -318,8 +318,8 @@ void jogoEdit()
         int escolha = 0;
         while (escolha != 999) 
         {
-            printf("\nVoc� est� no modo edi��o!\n");
-            printf("Digite o campo que gostaria de editar: (1. Nome, 2. Desenvolvedora, 3. Data de Lan�amento, 4. Plataforma, 999. Sair do modo edi��o)\n");
+            printf("\nVocê está no modo edição!\n");
+            printf("Digite o campo que gostaria de editar: (1. Nome, 2. Desenvolvedora, 3. Data de Lançamento, 4. Plataforma, 999. Sair do modo edição)\n");
             printf("> ");
             scanf("%d", &escolha);
             switch (escolha) 
@@ -341,7 +341,7 @@ void jogoEdit()
                     scanf("%31s", jogos.lista[posicao].desenvolvedora);
                     break;
                 case 3:
-                    printf("Digite a data de lan�amento: \n");
+                    printf("Digite a data de lançamento: \n");
                     printf("> ");
                     scanf("%10s", jogos.lista[posicao].data_lancamento);
                     break;
@@ -353,11 +353,11 @@ void jogoEdit()
                 case 999:
                     break;
                 default: 
-                    printf("\nComando n�o encontrado\n");
+                    printf("\nComando não encontrado\n");
                     break;
             }
         }
-    } else printf("Jogo n�o encontrado!\n");
+    } else printf("\nJogo não encontrado!\n");
 }
 
 void recordeEdit()
@@ -374,8 +374,8 @@ void recordeEdit()
         int posicao = resultado.lista[0];
         while (escolha != 999) 
         {
-            printf("\nVoc� est� no modo edi��o!\n");
-            printf("Digite o campo que gostaria de editar: (1. Usu�rio, 2. Jogo, 3. plataforma, 4. Tempo, 999. Sair do modo edi��o)\n");
+            printf("\nVocê está no modo edição!\n");
+            printf("Digite o campo que gostaria de editar: (1. Usu�rio, 2. Jogo, 3. plataforma, 4. Tempo, 999. Sair do modo edição)\n");
             printf("> ");
             scanf("%d", &escolha);
             char temp[32];
@@ -386,7 +386,7 @@ void recordeEdit()
                     printf("Digite o usuario desejado: \n");
                     printf("> ");
                     scanf("%s", &temp);
-                    if (userQuery(temp) < 0) printf("Usu�rio n�o encontrado\n");
+                    if (userQuery(temp) < 0) printf("Usuário não encontrado\n");
                     else { 
                         strcpy(recordes.lista[posicao].usuario, usuarios.lista[userQuery(temp)].apelido);
                         printf("Recorde editado com sucesso!\n");
@@ -396,7 +396,7 @@ void recordeEdit()
                     printf("Digite o nome do jogo: \n");
                     printf("> ");
                     scanf("%31s", temp);
-                    if (jogoQuery(temp) < 0) printf("Jogo n�o encontrado!\n");
+                    if (jogoQuery(temp) < 0) printf("Jogo não encontrado!\n");
                     else
                     {
                         strcpy(recordes.lista[posicao].jogo, jogos.lista[jogoQuery(temp)].nome);
@@ -418,14 +418,14 @@ void recordeEdit()
                 case 999:
                     break;
                 default: 
-                    printf("\nComando n�o encontrado\n");
+                    printf("\nComando não encontrado\n");
                     break;
             }
         }
-    } else printf("Jogo n�o encontrado!\n");
+    } else printf("\nRecorde não encontrado!\n");
 }
 
-void userDelete()
+void usuarioDelete()
 {
     int posicao;
 
@@ -439,9 +439,9 @@ void userDelete()
         usuarios.lista[posicao] = usuarios.lista[usuarios.tamanho - 1]; 
         usuarios.lista = (struct Usuario*) realloc(usuarios.lista, --usuarios.tamanho * sizeof(struct Usuario));
             
-        printf("Usu�rio deletado com sucesso!\n");
+        printf("Usuário deletado com sucesso!\n");
     }
-    else printf("\nNome não encontrado\n");
+    else printf("\nApelido não encontrado\n");
 }
 
 void jogoDelete() 
@@ -460,7 +460,7 @@ void jogoDelete()
         resultados = recordeQuery("*", jogos.lista[posicao].nome, "*");
         printf("Jogo deletado com sucesso!\n");
     }
-    else printf("Jogo n�o encontrado!\n");
+    else printf("Jogo nao encontrado!\n");
 }
 
 void recordeDelete() 
@@ -480,7 +480,7 @@ void recordeDelete()
     else printf("Recorde n�o encontrado!\n");
 }
 
-void dump() // Temporario para debugar com mais facilidade comando 123
+void dump() // temporario para debugar com mais facilidade - comando 123
 {
     if (jogos.tamanho != 0)
     {
@@ -488,9 +488,9 @@ void dump() // Temporario para debugar com mais facilidade comando 123
         for (int i = 0; i < jogos.tamanho; i++){
             printf("---\n");
             printf("Nome: %s\n", jogos.lista[i].nome);
-            printf("desenvolvedora: %s\n", jogos.lista[i].desenvolvedora);
-            printf("data_lancamento: %s\n", jogos.lista[i].data_lancamento);
-            printf("plataforma: %s\n", jogos.lista[i].plataforma);
+            printf("Desenvolvedora: %s\n", jogos.lista[i].desenvolvedora);
+            printf("Data_lancamento: %s\n", jogos.lista[i].data_lancamento);
+            printf("Plataforma: %s\n", jogos.lista[i].plataforma);
             printf("---\n");
         }
     }
@@ -501,8 +501,8 @@ void dump() // Temporario para debugar com mais facilidade comando 123
             printf("---\n");
             printf("Apelido: %s\n", usuarios.lista[i].apelido);
             printf("Email: %s\n", usuarios.lista[i].email);
-            printf("nascimento: %s\n", usuarios.lista[i].nascimento);
-            printf("pais: %s\n", usuarios.lista[i].pais);
+            printf("Nascimento: %s\n", usuarios.lista[i].nascimento);
+            printf("Pais: %s\n", usuarios.lista[i].pais);
             printf("---\n");
         }
     }
@@ -511,8 +511,8 @@ void dump() // Temporario para debugar com mais facilidade comando 123
         printf("\nrecordes\n");
         for (int i = 0; i < recordes.tamanho; i++){
             printf("---\n");
-            printf("identificador: %d\n", recordes.lista[i].identificacao);
-            printf("Usu�rio: %s\n", recordes.lista[i].usuario);
+            printf("Identificador: %d\n", recordes.lista[i].identificacao);
+            printf("Usuario: %s\n", recordes.lista[i].usuario);
             printf("Jogo: %s\n", recordes.lista[i].jogo);
             printf("Plataforma: %s\n", recordes.lista[i].plataforma);
             printf("Tempo: %s\n", formatarTempo(recordes.lista[i].tempo));
@@ -552,7 +552,6 @@ void consulta()
     // "Recordes:\n" 11
     // "1. [identificador] [nomeJogador] [pais] [jogo] [tempo] [data_registro]\n" 11 + 24 + 12 + 24 + 12 + 10 = 93 * consulta.tamanho 
 
-    //Bubble Sort
     for (int i = 0; i < consulta.tamanho - 1; i++)
         for (int j = 0; j < consulta.tamanho -1; j++)
             if (consulta.lista[j].tempo > consulta.lista[j+1].tempo)
@@ -594,13 +593,13 @@ void interpretador(int prompt)
             printf("%s", ajuda);
             break;
         case 1:
-            userAdd();
+            usuarioAdd();
             break;
         case 2:
-            userEdit();
+            usuarioEdit();
             break;
         case 3:
-            userDelete();
+            usuarioDelete();
             break;
         case 4:
             jogoAdd();
