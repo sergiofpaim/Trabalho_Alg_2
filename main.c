@@ -425,7 +425,6 @@ void recordeEdit()
     } else printf("Jogo n�o encontrado!\n");
 }
 
-//TODO: Arrumar a atualiza��o dos ponteiros p�s exclus�o
 void userDelete()
 {
     int posicao;
@@ -445,7 +444,6 @@ void userDelete()
     else printf("\nNome não encontrado\n");
 }
 
-//TODO: Arrumar a atualiza��o dos ponteiros p�s exclus�o
 void jogoDelete() 
 {
     int posicao;
