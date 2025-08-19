@@ -24,7 +24,6 @@ struct Recorde
 {
     char usuario[24];
     char jogo[24];
-    char data_lancamento[24];
     char plataforma[32];
     unsigned long long int tempo;
     time_t data_registro;
@@ -161,7 +160,7 @@ void exportarResultado(struct Recordes *consulta)
     }
 
     fclose(out);
-    printf("\nArquivo tabela_recordes.txt criado!\n");
+    printf("\nArquivo tabela_recordes.txt salvo com a consulta!\n");
 }
 
 void desserializarAlteracoes()
@@ -226,9 +225,8 @@ void desserializarAlteracoes()
     for (int i = 0; i < recordes.tamanho; i++)
     {
         struct Recorde temp;
-        fscanf(fileRecordes, "%s %s %s %s %llu %lld %d", temp.usuario,
+        fscanf(fileRecordes, "%s %s %s %llu %lld %d", temp.usuario,
                                                          temp.jogo,
-                                                         temp.data_lancamento,
                                                          temp.plataforma,
                                                          &temp.tempo,
                                                          &temp.data_registro,
@@ -236,7 +234,6 @@ void desserializarAlteracoes()
 
         deserializarString(recordes.lista[i].usuario, temp.usuario);
         deserializarString(recordes.lista[i].jogo, temp.jogo);
-        deserializarString(recordes.lista[i].data_lancamento, temp.data_lancamento);
         deserializarString(recordes.lista[i].plataforma, temp.plataforma);
         recordes.lista[i].tempo = temp.tempo;
         recordes.lista[i].data_registro = temp.data_registro;
@@ -308,8 +305,6 @@ void serializarAlteracoes()
         serializarString(buffer, recordes.lista[i].usuario);
         fprintf(fileRecordes, "%s ", buffer);
         serializarString(buffer, recordes.lista[i].jogo);
-        fprintf(fileRecordes, "%s ", buffer);
-        serializarString(buffer, recordes.lista[i].data_lancamento);
         fprintf(fileRecordes, "%s ", buffer);
         serializarString(buffer, recordes.lista[i].plataforma);
         fprintf(fileRecordes, "%s ", buffer);
@@ -847,20 +842,8 @@ void recordeDelete()
     else printf("\nRecorde não encontrado!\n");
 }
 
-void dump() // temporario para debugar com mais facilidade - comando 123
+void mostrarUsuarios()
 {
-    if (jogos.tamanho != 0)
-    {
-        printf("\nJogos\n");
-        for (int i = 0; i < jogos.tamanho; i++){
-            printf("\n---\n");
-            printf("\nNome: %s\n", jogos.lista[i].nome);
-            printf("\nDesenvolvedora: %s\n", jogos.lista[i].desenvolvedora);
-            printf("\nData_lancamento: %s\n", jogos.lista[i].data_lancamento);
-            printf("\nGênero: %s\n", jogos.lista[i].genero);
-            printf("\n---\n");
-        }
-    }
     if (usuarios.tamanho != 0)
     {
         printf("\nUsuarios\n");
@@ -873,20 +856,26 @@ void dump() // temporario para debugar com mais facilidade - comando 123
             printf("\n---\n");
         }
     }
-    if (recordes.tamanho != 0)
+    else
+        printf("\nNão há usuários adicionados\n");
+}
+
+void mostrarJogos()
+{
+     if (jogos.tamanho != 0)
     {
-        printf("\nrecordes\n");
-        for (int i = 0; i < recordes.tamanho; i++){
+        printf("\nJogos\n");
+        for (int i = 0; i < jogos.tamanho; i++){
             printf("\n---\n");
-            printf("\nIdentificador: %d\n", recordes.lista[i].identificacao);
-            printf("\nUsuario: %s\n", recordes.lista[i].usuario);
-            printf("\nJogo: %s\n", recordes.lista[i].jogo);
-            printf("\nPlataforma: %s\n", recordes.lista[i].plataforma);
-            printf("\nTempo: %s\n", formatarTempo(recordes.lista[i].tempo));
-            printf("\nData de Registro: %s\n", formatarData(recordes.lista[i].tempo));
+            printf("\nNome: %s\n", jogos.lista[i].nome);
+            printf("\nDesenvolvedora: %s\n", jogos.lista[i].desenvolvedora);
+            printf("\nData_lancamento: %s\n", jogos.lista[i].data_lancamento);
+            printf("\nGênero: %s\n", jogos.lista[i].genero);
             printf("\n---\n");
         }
     }
+    else
+        printf("\nNão há jogos adicionados\n");
 }
 
 void consulta()
@@ -949,15 +938,15 @@ void consulta()
     {
         char *tempo_str = formatarTempo(consulta.lista[i].tempo);
         char *data_str = formatarData(consulta.lista[i].data_registro);
-        
-        snprintf(linha, sizeof(linha), 
-                 "%d. %s %s %s %s %s\n", 
-                 consulta.lista[i].identificacao, 
-                 consulta.lista[i].usuario, 
-                 consulta.lista[i].plataforma, 
-                 consulta.lista[i].jogo, 
-                 tempo_str, 
-                 data_str);
+            
+        snprintf(linha, sizeof(linha),
+            "%-4d| %-20s | %-15s | %-15s | %-9s | %-10s\n",
+            consulta.lista[i].identificacao,
+            consulta.lista[i].usuario,
+            consulta.lista[i].plataforma,
+            consulta.lista[i].jogo,
+            tempo_str,
+            data_str);
 
         printf("\n%s", linha);
 
@@ -1013,10 +1002,13 @@ void interpretador(int prompt)
             recordeDelete();
             break;
         case 10:
-            consulta();
+            mostrarUsuarios();
             break;
-        case 123:
-            dump();
+        case 11:
+            mostrarJogos();
+            break;
+        case 12:
+            consulta();
             break;
         case 999:
             serializarAlteracoes();
