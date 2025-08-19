@@ -324,7 +324,7 @@ void recordeAdd()
     temp.tempo = horas * 3600000ULL + minutos * 60000ULL + segundos * 1000ULL + milisecundos;
     temp.data_registro = time(NULL);
 
-    temp.identificacao = gerarId(1000, 9999); 
+    temp.identificacao = gerarId(1000, 10000); 
 
     recordes.lista = (struct Recorde *) realloc(recordes.lista, ++recordes.tamanho * sizeof(struct Recorde));
     if (recordes.lista != NULL) recordes.lista[recordes.tamanho - 1] = temp;
@@ -689,24 +689,28 @@ void dump() // temporario para debugar com mais facilidade - comando 123
     }
 }
 
-//TODO: Resolver consulta que encontra apenas um resultado
 void consulta()
 {
     char nomeJogador[24];
     char nomeJogo[24];
     char identificacao_recorde[32];
-    int identificador, achou = 0;
+    
     struct Recordes consulta;
     consulta.tamanho = 0;
     consulta.lista = (struct Recorde*) malloc(consulta.tamanho * sizeof(struct Recorde));
 
-    printf("\nDigite a sua consulta neste formato <id_jogador nome_jogo identificacao_recorde> ou '*' para todos daquela posicao\n");
-    printf("\n> ");
+    printf("\nDigite a sua consulta neste formato \n\napelido_jogador\nnome_jogo\nidentificação_recorde\n\nOu '*' para todos daquela posicao\n");
+    printf("\nApelido Jogador> ");
+
     fgets(nomeJogador, sizeof(nomeJogador), stdin);
     nomeJogador[strcspn(nomeJogador, "\n")] = '\0';
 
+    printf("\nNome jogo> ");
+
     fgets(nomeJogo, sizeof(nomeJogo), stdin);
     nomeJogo[strcspn(nomeJogo, "\n")] = '\0';
+
+    printf("\nIdentificacão Recorde> ");
 
     fgets(identificacao_recorde, sizeof(identificacao_recorde), stdin);
     identificacao_recorde[strcspn(identificacao_recorde, "\n")] = '\0';
@@ -932,7 +936,7 @@ void casoDeTeste()
     }
 }
 
-void main()
+int main()
 {
     // Inicializa o gerador com a hora atual
     srand(time(NULL)); 
@@ -961,4 +965,6 @@ void main()
 
         interpretador(prompt);
     }
+
+    return 0;
 }
