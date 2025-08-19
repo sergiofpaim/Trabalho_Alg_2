@@ -172,7 +172,9 @@ void usuarioAdd()
     {
         printf("\nApelido\n");
         printf("\n> ");
-        scanf("%23s", temp.apelido);
+
+        fgets(temp.apelido, sizeof(temp.apelido), stdin);
+        temp.apelido[strcspn(temp.apelido, "\n")] = '\0';
     
         if ((nomeExistente = usuarioQuery(temp.apelido)) >= 0)
             printf("\nNome já existe no banco de dados\n");
@@ -183,13 +185,15 @@ void usuarioAdd()
 
     printf("\nEmail\n");
     printf("\n> ");
-    scanf("%31s", temp.email);
+    fgets(temp.email, sizeof(temp.email), stdin);
+    temp.email[strcspn(temp.email, "\n")] = '\0';
 
     do 
     {
         printf("\nNascimento (dd-mm-aaaa)\n");
         printf("\n> ");
-        scanf("%10s", temp.nascimento);
+        fgets(temp.nascimento, sizeof(temp.nascimento), stdin);
+        temp.nascimento[strcspn(temp.nascimento, "\n")] = '\0';
         
         if (validarData(temp.nascimento) != 1) 
         printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
@@ -198,9 +202,11 @@ void usuarioAdd()
     } 
     while (1);
 
-    printf("\nPaís\n");
+    printf("\nPa��s\n");
     printf("\n> ");
-    scanf("%11s", temp.pais);
+    getchar();
+    fgets(temp.pais, sizeof(temp.pais), stdin);
+    temp.pais[strcspn(temp.pais, "\n")] = '\0';
 
     usuarios.tamanho++;
     usuarios.lista = (struct Usuario *) realloc(usuarios.lista, usuarios.tamanho * sizeof(struct Usuario));
@@ -222,7 +228,8 @@ void jogoAdd()
     {
         printf("\nNome\n");
         printf("\n> ");
-        scanf("%23s", temp.nome);
+        fgets(temp.nome, sizeof(temp.nome), stdin);
+        temp.nome[strcspn(temp.nome, "\n")] = '\0';
 
         if ((jogoQuery(temp.nome)) >= 0) 
             printf("\nO jogo já existe no banco de dados\n");
@@ -233,13 +240,15 @@ void jogoAdd()
 
     printf("\nDesenvolvedores\n");
     printf("\n> ");
-    scanf("%31s", temp.desenvolvedora);
+    fgets(temp.desenvolvedora, sizeof(temp.desenvolvedora), stdin);
+    temp.desenvolvedora[strcspn(temp.desenvolvedora, "\n")] = '\0';
 
     do 
     {
         printf("\nLançamento (dd-mm-aaaa)\n");
         printf("\n> ");
-        scanf("%10s", temp.data_lancamento);
+        fgets(temp.data_lancamento, sizeof(temp.data_lancamento), stdin);
+        temp.data_lancamento[strcspn(temp.data_lancamento, "\n")] = '\0';
         
         if (validarData(temp.data_lancamento) != 1) 
             printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
@@ -250,7 +259,8 @@ void jogoAdd()
 
     printf("\nGênero\n");
     printf("\n> ");
-    scanf("%11s", temp.genero);
+    fgets(temp.genero, sizeof(temp.genero), stdin);
+    temp.genero[strcspn(temp.genero, "\n")] = '\0';
 
     jogos.lista = (struct Jogo *) realloc(jogos.lista, ++jogos.tamanho * sizeof(struct Jogo));
 
@@ -272,7 +282,9 @@ void recordeAdd()
 
     printf("\nNome do usuário: \n");
     printf("\n> ");
-    scanf("%s", player);
+    fgets(player, sizeof(player), stdin);
+    player[strcspn(player, "\n")] = '\0';
+
     if (usuarioQuery(player) >= 0) strcpy(temp.usuario, usuarios.lista[usuarioQuery(player)].apelido);
     else
     {
@@ -282,7 +294,9 @@ void recordeAdd()
     
     printf("\nNome do jogo:\n");
     printf("\n> ");
-    scanf("%s", jogo);
+    fgets(jogo, sizeof(jogo), stdin);
+    jogo[strcspn(jogo, "\n")] = '\0';
+
     if (jogoQuery(jogo) >= 0) strcpy(temp.jogo,jogos.lista[jogoQuery(jogo)].nome);
     else 
     {
@@ -292,13 +306,15 @@ void recordeAdd()
 
     printf("\nPlataforma do Recorde:\n");
     printf("\n> ");
-    scanf("%s", temp.plataforma);
+    fgets(temp.plataforma, sizeof(temp.plataforma), stdin);
+    temp.plataforma[strcspn(temp.plataforma, "\n")] = '\0';
 
     do 
     {
         printf("\nTempo da Run (formato hh:mm:ss:msms):\n");
         printf("\n> ");
         scanf("%d:%d:%d:%d", &horas, &minutos, &segundos, &milisecundos);
+        while(getchar() != '\n');
         
         if (validarTempo(horas, minutos, segundos, milisecundos) != 1) 
         printf("\nTempo em formato inválido, digite no formato (hh:mm:ss:msms)\n");
@@ -326,7 +342,8 @@ void usuarioEdit()
         printf("\nDigite o apelido do usuario:\n");
         char temp[24];
         printf("\n> ");
-        scanf("%23s", temp);
+        fgets(temp, sizeof(temp), stdin);
+        temp[strcspn(temp, "\n")] = '\0';
     
     if ((posicao = usuarioQuery(temp)) >= 0)
     {
@@ -337,13 +354,15 @@ void usuarioEdit()
                 printf("\nDigite o campo que gostaria de editar (1. Apelido, 2. Email, 3. Data de Nascimento, 4. País, 999. Sair da edição)\n");
                 printf("\n> ");
                 scanf("%d", &escolha);
+                while(getchar() != '\n');
                 switch (escolha)
                 {
                     case 1:
                         printf("\nDigite o nome:\n");
                         printf("\n> ");
                         char temp[24];
-                        scanf("%23s", temp);
+                        fgets(temp, sizeof(temp), stdin);
+                        temp[strcspn(temp, "\n")] = '\0';
 
                         if (usuarioQuery(temp) >= 0) printf("\nNome já existe\n");
                         else
@@ -355,7 +374,8 @@ void usuarioEdit()
                     case 2:
                         printf("\nDigite o email:\n");
                         printf("\n> ");
-                        scanf("%31s", usuarios.lista[posicao].email);
+                        fgets(usuarios.lista[posicao].email, sizeof(usuarios.lista[posicao].email), stdin);
+                        usuarios.lista[posicao].email[strcspn(usuarios.lista[posicao].email, "\n")] = '\0';
                         printf("\nEmail editado com sucesso\n");
                         break;
                     case 3:
@@ -364,7 +384,8 @@ void usuarioEdit()
                             struct Usuario temp;
                             printf("\nNascimento (dd-mm-aaaa)\n");
                             printf("\n> ");
-                            scanf("%10s", temp.nascimento);
+                            fgets(temp.nascimento, sizeof(temp.nascimento), stdin);
+                            temp.nascimento[strcspn(temp.nascimento, "\n")] = '\0';
                             
                             if (validarData(temp.nascimento) != 1) 
                                 printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
@@ -380,7 +401,8 @@ void usuarioEdit()
                     case 4:
                         printf("\nDigite o país:\n");
                         printf("\n> ");
-                        scanf("%11s", usuarios.lista[posicao].pais);
+                        fgets(usuarios.lista[posicao].pais, sizeof(usuarios.lista[posicao].pais), stdin);
+                        usuarios.lista[posicao].pais[strcspn(usuarios.lista[posicao].pais, "\n")] = '\0';
                         printf("\nPaís editado com sucesso\n");
                         break;
                     case 999:
@@ -399,9 +421,11 @@ void jogoEdit()
     int posicao;
 
     printf("\nDigite o nome do jogo:\n");
+    
     char temp[23];
     printf("\n> ");
-    scanf("%23s", temp);
+    fgets(temp, sizeof(temp), stdin);
+    temp[strcspn(temp, "\n")] = '\0';
 
     if ((posicao = jogoQuery(temp)) >= 0) 
     {
@@ -412,13 +436,15 @@ void jogoEdit()
             printf("\nDigite o campo que gostaria de editar: (1. Nome, 2. Desenvolvedora, 3. Data de Lançamento, 4. Genero, 999. Sair do modo edição)\n");
             printf("\n> ");
             scanf("%d", &escolha);
+            while(getchar() != '\n'); 
             switch (escolha) 
             {
                 case 1:
                     printf("\nDigite o do jogo: \n");
                     printf("\n> ");
                     char temp[24];
-                    scanf("%s", &temp);
+                    fgets(temp, sizeof(temp), stdin);
+                    temp[strcspn(temp, "\n")] = '\0';
                     if (jogoQuery(temp) >= 0) printf("\nJogo com nome já registrado!\n");
                     else { 
                         strcpy(jogos.lista[posicao].nome, temp);
@@ -428,7 +454,8 @@ void jogoEdit()
                 case 2:
                     printf("\nDigite o nome da desenvolvedora: \n");
                     printf("\n> ");
-                    scanf("%31s", jogos.lista[posicao].desenvolvedora);
+                    fgets(jogos.lista[posicao].desenvolvedora, sizeof(jogos.lista[posicao].desenvolvedora), stdin);
+                    jogos.lista[posicao].desenvolvedora[strcspn(jogos.lista[posicao].desenvolvedora, "\n")] = '\0';
                     printf("\nDesenvolvedora editada com sucesso\n");
                     break;
                 case 3:
@@ -437,7 +464,8 @@ void jogoEdit()
                         struct Jogo temp;
                         printf("\nLançamento (dd-mm-aaaa)\n");
                         printf("\n> ");
-                        scanf("%10s", temp.data_lancamento);
+                        fgets(temp.data_lancamento, sizeof(temp.data_lancamento), stdin);
+                        temp.data_lancamento[strcspn(temp.data_lancamento, "\n")] = '\0';
 
                         if (validarData(temp.data_lancamento) != 1)
                             printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
@@ -453,7 +481,8 @@ void jogoEdit()
                 case 4:
                     printf("\nDigite o genero do jogo: \n");
                     printf("\n> ");
-                    scanf("%11s", jogos.lista[posicao].genero);
+                    fgets(jogos.lista[posicao].genero, sizeof(jogos.lista[posicao].genero), stdin);
+                    jogos.lista[posicao].genero[strcspn(jogos.lista[posicao].genero, "\n")] = '\0';
                     printf("\nGenero editado com sucesso\n");
                     break;
                 case 999:
@@ -471,7 +500,8 @@ void recordeEdit()
     printf("\nDigite o id do recorde:\n");
     char id[24];
     printf("\n> ");
-    scanf("%s", id);
+    fgets(id, sizeof(id), stdin);
+    id[strcspn(id, "\n")] = '\0';
     struct Resultados resultado = recordeQuery("*", "*", id);
 
     if (resultado.tamanho > 0) 
@@ -484,6 +514,7 @@ void recordeEdit()
             printf("\nDigite o campo que gostaria de editar: (1. Usuário, 2. Jogo, 3. Plataforma, 4. Tempo, 999. Sair do modo edição)\n");
             printf("\n> ");
             scanf("%d", &escolha);
+            while(getchar() != '\n');
             char temp[32];
 
             switch (escolha) 
@@ -491,7 +522,8 @@ void recordeEdit()
                 case 1:
                     printf("\nDigite o usuario desejado: \n");
                     printf("\n> ");
-                    scanf("%s", &temp);
+                    fgets(temp, sizeof(temp), stdin);
+                    temp[strcspn(temp, "\n")] = '\0';
                     if (usuarioQuery(temp) < 0) printf("\nUsuário não encontrado\n");
                     else { 
                         strcpy(recordes.lista[posicao].usuario, usuarios.lista[usuarioQuery(temp)].apelido);
@@ -501,7 +533,8 @@ void recordeEdit()
                 case 2:
                     printf("\nDigite o nome do jogo: \n");
                     printf("\n> ");
-                    scanf("%31s", temp);
+                    fgets(temp, sizeof(temp), stdin);
+                    temp[strcspn(temp, "\n")] = '\0';
                     if (jogoQuery(temp) < 0) printf("\nJogo não encontrado!\n");
                     else
                     {
@@ -512,7 +545,8 @@ void recordeEdit()
                 case 3:
                     printf("\nDigite a plataforma: \n");
                     printf("\n> ");
-                    scanf("%10s", recordes.lista[posicao].plataforma);
+                    fgets(recordes.lista[posicao].plataforma, sizeof(recordes.lista[posicao].plataforma), stdin);
+                    recordes.lista[posicao].plataforma[strcspn(recordes.lista[posicao].plataforma, "\n")] = '\0';
                     break;
                 case 4:
                     do 
@@ -521,6 +555,7 @@ void recordeEdit()
                         printf("\nTempo da Run (formato hh:mm:ss:msms):\n");
                         printf("\n> ");
                         scanf("%d:%d:%d:%d", &horas, &minutos, &segundos, &milisecundos);
+                        while(getchar() != '\n');
 
                         if (validarTempo(horas, minutos, segundos, milisecundos) != 1) 
                             printf("\nTempo em formato inválido, digite no formato (hh:mm:ss:msms)\n");
@@ -550,7 +585,8 @@ void usuarioDelete()
     printf("\nDigite o apelido do usuario:\n");
     char apelido[24];
     printf("\n> ");
-    scanf("%23s", apelido);
+    fgets(apelido, sizeof(apelido), stdin);
+    apelido[strcspn(apelido, "\n")] = '\0';
     
     if ((posicao = usuarioQuery(apelido)) >= 0)
     {
@@ -573,7 +609,8 @@ void jogoDelete()
 
     printf("\nDigite o nome do jogo: \n");
     char nome[24];
-    scanf("%23s", nome);
+    fgets(nome, sizeof(nome), stdin);
+    nome[strcspn(nome, "\n")] = '\0';
 
     if((posicao = jogoQuery(nome)))
     {
@@ -597,7 +634,8 @@ void recordeDelete()
     char id[24];
     printf("\nDigite identificador do recorde: \n");
     printf("\n> ");
-    scanf("%s", id);
+    fgets(id, sizeof(id), stdin);
+    id[strcspn(id, "\n")] = '\0';
     struct Resultados resultado = recordeQuery("*", "*", id);
 
     if (resultado.tamanho > 0) 
@@ -664,7 +702,14 @@ void consulta()
 
     printf("\nDigite a sua consulta neste formato <id_jogador nome_jogo identificacao_recorde> ou '*' para todos daquela posicao\n");
     printf("\n> ");
-    scanf("%23s %23s %31s", nomeJogador, nomeJogo, identificacao_recorde);
+    fgets(nomeJogador, sizeof(nomeJogador), stdin);
+    nomeJogador[strcspn(nomeJogador, "\n")] = '\0';
+
+    fgets(nomeJogo, sizeof(nomeJogo), stdin);
+    nomeJogo[strcspn(nomeJogo, "\n")] = '\0';
+
+    fgets(identificacao_recorde, sizeof(identificacao_recorde), stdin);
+    identificacao_recorde[strcspn(identificacao_recorde, "\n")] = '\0';
 
     struct Resultados resultados = recordeQuery(nomeJogador, nomeJogo, identificacao_recorde);
 
@@ -912,6 +957,7 @@ void main()
         printf("\nDigite o comando, ou 0 para ajuda\n");
         printf("\n> ");
         scanf("%d", &prompt);
+        while(getchar() != '\n');
 
         interpretador(prompt);
     }
