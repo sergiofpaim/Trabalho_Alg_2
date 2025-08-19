@@ -123,6 +123,32 @@ int validarTempo(int horas, int minutos, int segundos, int milissegundos) {
     return 1;
 }
 
+void exportarResultado(struct Recordes *consulta)
+{
+    FILE* out = fopen("tabela_recordes.txt", "w");
+    if (!out) {
+        printf("\nFalha ao salvar o arquivo\n");
+        return;
+    }
+
+    fprintf(out, "--------------------------\n");
+    // Salva os dados da struct no arquivo
+    for (int i = 0; i < consulta->tamanho; i++)
+    {
+        fprintf(out, "Usuário: %s\n", consulta->lista[i].usuario);
+        fprintf(out, "Jogo: %s\n", consulta->lista[i].jogo);
+        fprintf(out, "Plataforma: %s\n", consulta->lista[i].plataforma);
+        fprintf(out, "Tempo: %s\n", formatarTempo(consulta->lista[i].tempo));
+        fprintf(out, "Data de Registro: %s\n", formatarData(consulta->lista[i].data_registro));
+        fprintf(out, "Identificador: %d\n", consulta->lista[i].identificacao);
+        fprintf(out, "--------------------------\n");
+    }
+
+    fclose(out);
+    printf("\nArquivo tabela_recordes.txt criado!\n");
+}
+
+
 // Confere se o usuário já existe no banco de dados
 int usuarioQuery(char *identificacao)
 {
@@ -764,6 +790,17 @@ void consulta()
         free(tempo_str);
         free(data_str);
     }
+
+    char escolha;
+
+    printf("\nGostaria de exportar os resultados da sua consulta? (s/n)\n");
+    printf("> ");
+    scanf("%c", &escolha);
+
+    if (escolha == 's')
+        exportarResultado(&consulta);
+    else if (escolha != 'n')
+        printf("Escolha inválida");
 }
 
 void interpretador(int prompt)
