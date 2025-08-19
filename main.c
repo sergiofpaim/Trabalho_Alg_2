@@ -148,8 +148,8 @@ struct Resultados recordeQuery(char* nomeJogador, char* nomeJogo, char* identifi
     resultados.tamanho = 0;
     resultados.lista = (int *) malloc(resultados.tamanho * sizeof(int));
     for (int i = 0; i <= recordes.tamanho - 1; i++){
-        int achouJogador = (strcmp(nomeJogador, "*") == 0) || (strcmp(nomeJogador, usuarios.lista[i].apelido) == 0);
-        int achouJogo = (strcmp(nomeJogo, "*") == 0) || (strcmp(nomeJogo, jogos.lista[i].nome) == 0);
+        int achouJogador = (strcmp(nomeJogador, "*") == 0) || (strcmp(nomeJogador, recordes.lista[i].usuario) == 0);
+        int achouJogo = (strcmp(nomeJogo, "*") == 0) || (strcmp(nomeJogo, recordes.lista[i].jogo) == 0);
         int achouId = (strcmp(identificacao_recorde, "*") == 0) || (recordes.lista[i].identificacao == atoi(identificacao_recorde));
 
         if (achouId && achouJogador && achouJogo){
@@ -163,7 +163,7 @@ struct Resultados recordeQuery(char* nomeJogador, char* nomeJogo, char* identifi
 
 void usuarioAdd()
 {
-    struct Usuario temp;;
+    struct Usuario temp;
     int nomeExistente = 0;
 
     printf("\nDigite as informaÃ§Ãµes do usuÃ¡rio:\n");
@@ -202,7 +202,7 @@ void usuarioAdd()
     } 
     while (1);
 
-    printf("\nPaí­s\n");
+    printf("\nPaï¿½ï¿½s\n");
     printf("\n> ");
     getchar();
     fgets(temp.pais, sizeof(temp.pais), stdin);
