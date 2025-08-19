@@ -58,6 +58,22 @@ struct Usuarios usuarios;
 struct Jogos jogos;
 struct Recordes recordes;
 
+void serializarString(char* destino, char* origem)
+{
+    int i;
+    for (i = 0; origem[i] != '\0'; i++)
+        destino[i] = (origem[i] == ' ') ? '_' : origem[i];
+    destino[i] = '\0';
+}
+
+void deserializarString(char* destino, char* origem)
+{
+    int i;
+    for (i = 0; origem[i] != '\0'; i++)
+        destino[i] = (origem[i] == '_') ? ' ' : origem[i];
+    destino[i] = '\0';
+}
+
 int gerarId(int min, int max) {
     return min + rand() % (max - min + 1);
 }
@@ -160,10 +176,16 @@ void desserializarAlteracoes()
     usuarios.lista = (struct Usuario*) realloc(usuarios.lista, usuarios.tamanho * sizeof(struct Usuario));
     for (int i = 0; i < usuarios.tamanho; i++)
     {
-        fscanf(fileUsuarios, "%s %s %s %s", usuarios.lista[i].apelido,
-                                            usuarios.lista[i].email,
-                                            usuarios.lista[i].nascimento,
-                                            usuarios.lista[i].pais);
+        struct Usuario temp;
+        fscanf(fileUsuarios, "%s %s %s %s", temp.apelido,
+                                            temp.email,
+                                            temp.nascimento,
+                                            temp.pais);
+
+        deserializarString(usuarios.lista[i].apelido, temp.apelido);
+        deserializarString(usuarios.lista[i].email, temp.email);
+        deserializarString(usuarios.lista[i].nascimento, temp.nascimento);
+        deserializarString(usuarios.lista[i].pais, temp.pais);
     }
 
     fclose(fileUsuarios);
@@ -178,10 +200,17 @@ void desserializarAlteracoes()
     jogos.lista = (struct Jogo*) realloc(jogos.lista, jogos.tamanho * sizeof(struct Jogo));
     for (int i = 0; i < jogos.tamanho; i++)
     {
-        fscanf(fileJogos, "%s %s %s %s", jogos.lista[i].nome,
-                                         jogos.lista[i].genero,
-                                         jogos.lista[i].desenvolvedora,
-                                         jogos.lista[i].data_lancamento);
+        struct Jogo temp;
+        fscanf(fileJogos, "%s %s %s %s", temp.nome,
+                                         temp.genero,
+                                         temp.desenvolvedora,
+                                         temp.data_lancamento);
+
+
+        deserializarString(jogos.lista[i].nome, temp.nome);
+        deserializarString(jogos.lista[i].genero, temp.genero);
+        deserializarString(jogos.lista[i].desenvolvedora, temp.desenvolvedora);
+        deserializarString(jogos.lista[i].data_lancamento, temp.data_lancamento);
     }
 
     fclose(fileJogos);
@@ -196,13 +225,22 @@ void desserializarAlteracoes()
     recordes.lista = (struct Recorde*) realloc(recordes.lista, recordes.tamanho * sizeof(struct Recorde));
     for (int i = 0; i < recordes.tamanho; i++)
     {
-        fscanf(fileRecordes, "%s %s %s %s %llu %lld %d", recordes.lista[i].usuario,
-                                                         recordes.lista[i].jogo,
-                                                         recordes.lista[i].data_lancamento,
-                                                         recordes.lista[i].plataforma,
-                                                         &recordes.lista[i].tempo,
-                                                         &recordes.lista[i].data_registro,
-                                                         &recordes.lista[i].identificacao);
+        struct Recorde temp;
+        fscanf(fileRecordes, "%s %s %s %s %llu %lld %d", temp.usuario,
+                                                         temp.jogo,
+                                                         temp.data_lancamento,
+                                                         temp.plataforma,
+                                                         &temp.tempo,
+                                                         &temp.data_registro,
+                                                         &temp.identificacao);
+
+        deserializarString(recordes.lista[i].usuario, temp.usuario);
+        deserializarString(recordes.lista[i].jogo, temp.jogo);
+        deserializarString(recordes.lista[i].data_lancamento, temp.data_lancamento);
+        deserializarString(recordes.lista[i].plataforma, temp.plataforma);
+        recordes.lista[i].tempo = temp.tempo;
+        recordes.lista[i].data_registro = temp.data_registro;
+        recordes.lista[i].identificacao = temp.identificacao;
     }
 
     fclose(fileRecordes);
@@ -219,10 +257,16 @@ void serializarAlteracoes()
     fprintf(fileUsuarios, "%d\n", usuarios.tamanho);
     for (int i = 0; i < usuarios.tamanho; i++)
     {
-        fprintf(fileUsuarios, "%s %s %s %s\n", usuarios.lista[i].apelido,
-                                               usuarios.lista[i].email,
-                                               usuarios.lista[i].nascimento,
-                                               usuarios.lista[i].pais);        
+        char buffer[100];
+
+        serializarString(buffer, usuarios.lista[i].apelido);
+        fprintf(fileUsuarios, "%s ", buffer);
+        serializarString(buffer, usuarios.lista[i].email);
+        fprintf(fileUsuarios, "%s ", buffer);
+        serializarString(buffer, usuarios.lista[i].nascimento);
+        fprintf(fileUsuarios, "%s ", buffer);
+        serializarString(buffer, usuarios.lista[i].pais);
+        fprintf(fileUsuarios, "%s\n", buffer);
     }
 
     fclose(fileUsuarios);
@@ -236,10 +280,16 @@ void serializarAlteracoes()
     fprintf(fileJogos, "%d\n", jogos.tamanho);
     for (int i = 0; i < jogos.tamanho; i++)
     {
-        fprintf(fileJogos, "%s %s %s %s\n", jogos.lista[i].nome,
-                                            jogos.lista[i].genero,
-                                            jogos.lista[i].desenvolvedora,
-                                            jogos.lista[i].data_lancamento);
+        char buffer[100];
+
+        serializarString(buffer, jogos.lista[i].nome);
+        fprintf(fileJogos, "%s ", buffer);
+        serializarString(buffer, jogos.lista[i].desenvolvedora);
+        fprintf(fileJogos, "%s ", buffer);
+        serializarString(buffer, jogos.lista[i].data_lancamento);
+        fprintf(fileJogos, "%s ", buffer);
+        serializarString(buffer, jogos.lista[i].genero);
+        fprintf(fileJogos, "%s\n", buffer);
     }
 
     fclose(fileJogos);
@@ -253,11 +303,18 @@ void serializarAlteracoes()
     fprintf(fileRecordes, "%d\n", recordes.tamanho);
     for (int i = 0; i < recordes.tamanho; i++)
     {
-        fprintf(fileRecordes, "%s %s %s %s %llu %lld %d\n", recordes.lista[i].usuario,
-                                                            recordes.lista[i].jogo,
-                                                            recordes.lista[i].data_lancamento,
-                                                            recordes.lista[i].plataforma,
-                                                            recordes.lista[i].tempo,
+        char buffer[100];
+        
+        serializarString(buffer, recordes.lista[i].usuario);
+        fprintf(fileRecordes, "%s ", buffer);
+        serializarString(buffer, recordes.lista[i].jogo);
+        fprintf(fileRecordes, "%s ", buffer);
+        serializarString(buffer, recordes.lista[i].data_lancamento);
+        fprintf(fileRecordes, "%s ", buffer);
+        serializarString(buffer, recordes.lista[i].plataforma);
+        fprintf(fileRecordes, "%s ", buffer);
+
+        fprintf(fileRecordes, "%llu %lld %d\n", recordes.lista[i].tempo,
                                                             recordes.lista[i].data_registro,
                                                             recordes.lista[i].identificacao);
     }
