@@ -125,7 +125,7 @@ int validarTempo(int horas, int minutos, int segundos, int milissegundos) {
 
 void exportarResultado(struct Recordes *consulta)
 {
-    FILE* out = fopen("tabela_recordes.txt", "w");
+    FILE* out = fopen("armazenamento/tabela_recordes.txt", "w");
     if (!out) {
         printf("\nFalha ao salvar o arquivo\n");
         return;
@@ -146,6 +146,123 @@ void exportarResultado(struct Recordes *consulta)
 
     fclose(out);
     printf("\nArquivo tabela_recordes.txt criado!\n");
+}
+
+void desserializarAlteracoes()
+{
+    FILE *fileUsuarios = fopen("armazenamento/usuarios.txt", "r");
+    if (!fileUsuarios) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+
+    fscanf(fileUsuarios, "%d", &usuarios.tamanho);
+    usuarios.lista = (struct Usuario*) realloc(usuarios.lista, usuarios.tamanho * sizeof(struct Usuario));
+    for (int i = 0; i < usuarios.tamanho; i++)
+    {
+        fscanf(fileUsuarios, "%s %s %s %s", usuarios.lista[i].apelido,
+                                            usuarios.lista[i].email,
+                                            usuarios.lista[i].nascimento,
+                                            usuarios.lista[i].pais);
+    }
+
+    fclose(fileUsuarios);
+
+    FILE *fileJogos = fopen("armazenamento/jogos.txt", "r");
+    if (!fileJogos) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+
+    fscanf(fileJogos, "%d", &jogos.tamanho);
+    jogos.lista = (struct Jogo*) realloc(jogos.lista, jogos.tamanho * sizeof(struct Jogo));
+    for (int i = 0; i < jogos.tamanho; i++)
+    {
+        fscanf(fileJogos, "%s %s %s %s", jogos.lista[i].nome,
+                                         jogos.lista[i].genero,
+                                         jogos.lista[i].desenvolvedora,
+                                         jogos.lista[i].data_lancamento);
+    }
+
+    fclose(fileJogos);
+
+    FILE *fileRecordes = fopen("armazenamento/recordes.txt", "r");
+    if (!fileRecordes) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+
+    fscanf(fileRecordes, "%d", &recordes.tamanho);
+    recordes.lista = (struct Recorde*) realloc(recordes.lista, recordes.tamanho * sizeof(struct Recorde));
+    for (int i = 0; i < recordes.tamanho; i++)
+    {
+        fscanf(fileRecordes, "%s %s %s %s %llu %lld %d", recordes.lista[i].usuario,
+                                                         recordes.lista[i].jogo,
+                                                         recordes.lista[i].data_lancamento,
+                                                         recordes.lista[i].plataforma,
+                                                         &recordes.lista[i].tempo,
+                                                         &recordes.lista[i].data_registro,
+                                                         &recordes.lista[i].identificacao);
+    }
+
+    fclose(fileRecordes);
+}
+
+void serializarAlteracoes()
+{
+    FILE *fileUsuarios = fopen("armazenamento/usuarios.txt", "w");
+    if (!fileUsuarios) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+
+    fprintf(fileUsuarios, "%d\n", usuarios.tamanho);
+    for (int i = 0; i < usuarios.tamanho; i++)
+    {
+        fprintf(fileUsuarios, "%s %s %s %s\n", usuarios.lista[i].apelido,
+                                               usuarios.lista[i].email,
+                                               usuarios.lista[i].nascimento,
+                                               usuarios.lista[i].pais);        
+    }
+
+    fclose(fileUsuarios);
+
+    FILE *fileJogos = fopen("armazenamento/jogos.txt", "w");
+    if (!fileJogos) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+
+    fprintf(fileJogos, "%d\n", jogos.tamanho);
+    for (int i = 0; i < jogos.tamanho; i++)
+    {
+        fprintf(fileJogos, "%s %s %s %s\n", jogos.lista[i].nome,
+                                            jogos.lista[i].genero,
+                                            jogos.lista[i].desenvolvedora,
+                                            jogos.lista[i].data_lancamento);
+    }
+
+    fclose(fileJogos);
+
+    FILE *fileRecordes = fopen("armazenamento/recordes.txt", "w");
+    if (!fileRecordes) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+
+    fprintf(fileRecordes, "%d\n", recordes.tamanho);
+    for (int i = 0; i < recordes.tamanho; i++)
+    {
+        fprintf(fileRecordes, "%s %s %s %s %llu %lld %d\n", recordes.lista[i].usuario,
+                                                            recordes.lista[i].jogo,
+                                                            recordes.lista[i].data_lancamento,
+                                                            recordes.lista[i].plataforma,
+                                                            recordes.lista[i].tempo,
+                                                            recordes.lista[i].data_registro,
+                                                            recordes.lista[i].identificacao);
+    }
+
+    fclose(fileRecordes);
 }
 
 
@@ -845,131 +962,12 @@ void interpretador(int prompt)
             dump();
             break;
         case 999:
+            serializarAlteracoes();
             printf("\nAdeus!\n");
             break;
         default:
             printf("\nComando não encontrado\n");
             break;
-    }
-}
-
-void casoDeTeste() 
-{
-    struct Usuario casoUsuario;
-    struct Jogo casoJogo;
-    struct Recorde casoRecorde;
-    
-    for (int i = 0; i < 5; i++) {
-        if (i == 0)
-        {
-            strcpy(casoUsuario.apelido, "joaofernandes");
-            strcpy(casoUsuario.email, "fernandesjoao@gmail.com");
-            strcpy(casoUsuario.nascimento, "20-08-1999");
-            strcpy(casoUsuario.pais, "Portugal");
-
-            strcpy(casoJogo.nome, "Metroid");
-            strcpy(casoJogo.desenvolvedora, "MercurySteam");
-            strcpy(casoJogo.data_lancamento, "08-10-2021");
-            strcpy(casoJogo.genero, "Ação/Aventura");
-
-            strcpy(casoRecorde.usuario, casoUsuario.apelido);
-            strcpy(casoRecorde.jogo, casoJogo.nome);
-            strcpy(casoRecorde.plataforma, "PS3");
-            casoRecorde.data_registro = time(NULL);
-            casoRecorde.identificacao = gerarId(1000, 9999); 
-            casoRecorde.tempo = 1 * 3600000 + 32 * 60000ULL + 51 * 1000ULL + 523;
-
-        }
-        else if (i == 1) 
-        {
-            strcpy(casoUsuario.apelido, "sergiopaim");
-            strcpy(casoUsuario.email, "paimsergio@gmail.com");
-            strcpy(casoUsuario.nascimento, "30-08-2004");
-            strcpy(casoUsuario.pais, "Etiópia");
-
-            strcpy(casoJogo.nome, "Celeste");
-            strcpy(casoJogo.desenvolvedora, "Maddy Makes Games");
-            strcpy(casoJogo.data_lancamento, "25-01-2018");
-            strcpy(casoJogo.genero, "Ação");
-
-            strcpy(casoRecorde.usuario, casoUsuario.apelido);
-            strcpy(casoRecorde.jogo, casoJogo.nome);
-            strcpy(casoRecorde.plataforma, "PC");
-            casoRecorde.data_registro = time(NULL);
-            casoRecorde.identificacao = gerarId(1000, 9999); 
-
-            casoRecorde.tempo = 0 * 3600000ULL + 36 * 60000ULL + 12 * 1000ULL + 138;
-        }
-        else if (i == 2) 
-        {
-            strcpy(casoUsuario.apelido, "joaocosta");
-            strcpy(casoUsuario.email, "costajoao@gmail.com");
-            strcpy(casoUsuario.nascimento, "09-12-2002");
-            strcpy(casoUsuario.pais, "Su�cia");
-
-            strcpy(casoJogo.nome, "Dark Souls");
-            strcpy(casoJogo.desenvolvedora, "FromSoftware");
-            strcpy(casoJogo.data_lancamento, "22-09-2011");
-            strcpy(casoJogo.genero, "RPG Ação/Fantasia");
-
-            strcpy(casoRecorde.usuario, casoUsuario.apelido);
-            strcpy(casoRecorde.jogo, casoJogo.nome);
-            strcpy(casoRecorde.plataforma, "Xbox 360");
-            casoRecorde.data_registro = time(NULL);
-            casoRecorde.identificacao = gerarId(1000, 9999); 
-
-            casoRecorde.tempo = 0 * 3600000ULL + 31 * 60000ULL + 59 * 1000ULL + 364;
-        }
-        else if (i == 3){
-            strcpy(casoUsuario.apelido, "vitorcarvalho");
-            strcpy(casoUsuario.email, "carvalhovitor@gmail.com");
-            strcpy(casoUsuario.nascimento, "25-06-1998");
-            strcpy(casoUsuario.pais, "China");
-
-            strcpy(casoJogo.nome, "Cuphead");
-            strcpy(casoJogo.desenvolvedora, "Studio MDHR");
-            strcpy(casoJogo.data_lancamento, "29-09-2017");
-            strcpy(casoJogo.genero, "Ação");
-
-            strcpy(casoRecorde.usuario, casoUsuario.apelido);
-            strcpy(casoRecorde.jogo, casoJogo.nome);
-            strcpy(casoRecorde.plataforma, "Xbox One");
-            casoRecorde.data_registro = time(NULL);
-            casoRecorde.identificacao = gerarId(1000, 9999); 
-
-            casoRecorde.tempo = 1 * 3600000ULL + 1 * 60000ULL + 48 * 1000ULL + 689;
-        }
-        else {
-            strcpy(casoUsuario.apelido, "pedrolage");
-            strcpy(casoUsuario.email, "lagepedro@gmail.com");
-            strcpy(casoUsuario.nascimento, "01-01-1996");
-            strcpy(casoUsuario.pais, "Argentina");
-
-            strcpy(casoJogo.nome, "Mirror's Edge");
-            strcpy(casoJogo.desenvolvedora, "DICE");
-            strcpy(casoJogo.data_lancamento, "11-11-2008");
-            strcpy(casoJogo.genero, "Ação/Aventura");
-
-            strcpy(casoRecorde.usuario, casoUsuario.apelido);
-            strcpy(casoRecorde.jogo, casoJogo.nome);
-            strcpy(casoRecorde.plataforma, "PS3");
-            casoRecorde.data_registro = time(NULL);
-            casoRecorde.identificacao = gerarId(1000, 9999); 
-
-            casoRecorde.tempo = 0 * 3600000ULL + 47 * 60000ULL + 35 * 1000ULL + 987;
-        }
-
-        jogos.tamanho++;
-        jogos.lista = (struct Jogo *) realloc(jogos.lista, jogos.tamanho * sizeof(struct Jogo));
-        jogos.lista[jogos.tamanho - 1] = casoJogo;
-
-        usuarios.tamanho++;
-        usuarios.lista = (struct Usuario *) realloc(usuarios.lista, usuarios.tamanho * sizeof(struct Usuario));
-        usuarios.lista[usuarios.tamanho - 1] = casoUsuario;
-
-        recordes.tamanho++;
-        recordes.lista = (struct Recorde *) realloc(recordes.lista, recordes.tamanho * sizeof(struct Recorde));
-        recordes.lista[recordes.tamanho - 1] = casoRecorde;
     }
 }
 
@@ -987,8 +985,8 @@ int main()
     recordes.tamanho = 0;
     recordes.lista = (struct Recorde*)malloc(recordes.tamanho * sizeof(struct Recorde));
 
-    casoDeTeste();
-
+    desserializarAlteracoes();
+        
     int prompt = 0;
 
     printf("\nBem vindo ao Speed Runners!\n");
