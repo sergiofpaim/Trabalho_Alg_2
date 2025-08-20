@@ -580,7 +580,7 @@ void consulta()
 
     struct Recordes consulta;
     consulta.tamanho = 0;
-    consulta.lista = NULL; // começa sem nada
+    consulta.lista = NULL;
 
     printf("\nDigite a sua consulta neste formato \n\napelido_jogador\nnome_jogo\nidentificação_recorde\n\nOu '*' para todos daquela posicao\n");
     printf("\nApelido Jogador> ");
@@ -612,7 +612,6 @@ void consulta()
     {
         struct Recorde candidato = recordes.lista[resultados.lista[i]];
 
-        // verifica se já existe na lista "consulta"
         int jaExiste = 0;
         for (int k = 0; k < consulta.tamanho; k++)
         {
@@ -623,7 +622,6 @@ void consulta()
             }
         }
 
-        // se não existe, insere
         if (!jaExiste)
         {
             consulta.lista = realloc(consulta.lista, (consulta.tamanho + 1) * sizeof(struct Recorde));
@@ -632,7 +630,6 @@ void consulta()
         }
     }
 
-    // ordena pelo tempo (bubble sort simples)
     for (int i = 0; i < consulta.tamanho - 1; i++)
         for (int j = 0; j < consulta.tamanho - 1; j++)
             if (consulta.lista[j].tempo > consulta.lista[j + 1].tempo)
