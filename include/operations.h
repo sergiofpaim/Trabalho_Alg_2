@@ -12,7 +12,8 @@ void jogoDelete();
 void recordeDelete();
 void mostrarUsuarios();
 void mostrarJogos();
-void consulta();
+struct Recordes consultaRecordes(char* nomeJogador, char* nomeJogo, char* identificacao_recorde);
+void mostrarRecordes(struct Recordes consulta);
 void interpretador(int prompt);
 
 #endif

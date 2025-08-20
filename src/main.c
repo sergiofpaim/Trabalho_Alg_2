@@ -24,13 +24,11 @@ int main()
         if (scanf("%d", &prompt) != 1)
         {
             // Descarta o resto da linha
-            while (getchar() != '\n')
-                ;
+            while (getchar() != '\n');
             printf("\nEntrada inválida\n");
             continue;
         }
-        while (getchar() != '\n')
-            ;
+        while (getchar() != '\n');
 
         interpretador(prompt);
     }

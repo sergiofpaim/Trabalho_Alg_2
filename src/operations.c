@@ -2,6 +2,7 @@
 #include "../include/utils.h"
 #include "../include/queries.h"
 #include "../include/storage.h"
+#include "../include/menus.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -572,41 +573,13 @@ void mostrarJogos()
         printf("\nNão há jogos adicionados\n");
 }
 
-void consulta()
+struct Recordes consultaRecordes(char* nomeJogador, char* nomeJogo, char* identificacao_recorde)
 {
-    char nomeJogador[24];
-    char nomeJogo[24];
-    char identificacao_recorde[32];
-
     struct Recordes consulta;
     consulta.tamanho = 0;
     consulta.lista = NULL;
 
-    printf("\nDigite a sua consulta neste formato \n\napelido_jogador\nnome_jogo\nidentificação_recorde\n\nOu '*' para todos daquela posicao\n");
-    printf("\nApelido Jogador> ");
-
-    fgets(nomeJogador, sizeof(nomeJogador), stdin);
-    nomeJogador[strcspn(nomeJogador, "\n")] = '\0';
-
-    printf("\nNome jogo> ");
-
-    fgets(nomeJogo, sizeof(nomeJogo), stdin);
-    nomeJogo[strcspn(nomeJogo, "\n")] = '\0';
-
-    printf("\nIdentificacão Recorde> ");
-
-    fgets(identificacao_recorde, sizeof(identificacao_recorde), stdin);
-    identificacao_recorde[strcspn(identificacao_recorde, "\n")] = '\0';
-
     struct Resultados resultados = recordeQuery(nomeJogador, nomeJogo, identificacao_recorde);
-
-    printf("Resultados encontrados: %d\n", resultados.tamanho);
-
-    if (resultados.tamanho == 0)
-    {
-        printf("\nNenhum recorde encontrado!\n");
-        return;
-    }
 
     for (int i = 0; i < resultados.tamanho; i++)
     {
@@ -638,7 +611,12 @@ void consulta()
                 consulta.lista[j] = consulta.lista[j + 1];
                 consulta.lista[j + 1] = temp;
             }
+    
+    return consulta;
+}
 
+void mostrarRecordes(struct Recordes consulta)
+{
     char linha[128];
 
     for (int i = 0; i < consulta.tamanho; i++)
@@ -660,19 +638,6 @@ void consulta()
         free(tempo_str);
         free(data_str);
     }
-
-    char escolha;
-
-    printf("\nGostaria de exportar os resultados da sua consulta? (s/n)\n");
-    printf("> ");
-    scanf("%c", &escolha);
-    while (getchar() != '\n')
-        ;
-
-    if (escolha == 's')
-        exportarResultado(&consulta);
-    else if (escolha != 'n')
-        printf("Escolha inválida");
 }
 
 void interpretador(int prompt)
@@ -718,7 +683,16 @@ void interpretador(int prompt)
         mostrarJogos();
         break;
     case 12:
-        consulta();
+        //consulta();
+        break;
+    case 122:
+        adicionar();
+        break;
+    case 123:
+        editar();
+        break;
+    case 124:
+        consultar();
         break;
     case 999:
         serializarAlteracoes();

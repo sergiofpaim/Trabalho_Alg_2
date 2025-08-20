@@ -1,6 +1,6 @@
 5
-Metroid 08-10-2021 Ação/Aventura MercurySteam
-Celeste 25-01-2018 Ação Maddy_Makes_Games
-Dark_Souls 22-09-2011 RPG/Ação/Fantasia FromSoftware
-Cuphead 29-09-2017 Ação Studio_MDHR
-Mirror's_Edge 11-11-2008 Ação/Aventura DICE
+Metroid Ação/Aventura MercurySteam 08-10-2021
+Celeste Ação Maddy_Makes_Games 25-01-2018
+Dark_Souls RPG/Ação/Fantasia FromSoftware 22-09-2011
+Cuphead Ação Studio_MDHR 29-09-2017
+Mirror's_Edge Ação/Aventura DICE 11-11-2008

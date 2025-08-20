@@ -8,18 +8,14 @@ O sistema permite adicionar, editar, remover e consultar dados, além de exporta
 Abra um terminal (cmd ou PowerShell) no diretório do projeto e execute:
 
 ```bash
-cd src/
-gcc *.c -o ../speedrunners.exe
-cd ..
+gcc src/*.c -o speedrunners.exe
 ```
 
 ou, se preferir produzir sem extensão no Linux/MinGW:
 
 ```bash
-cd src/
-gcc *.c -o ../speedrunners
-cd ..
 ```
+gcc src/*.c -o speedrunners
 
 #### Execução
 No mesmo diretório que o executável:
