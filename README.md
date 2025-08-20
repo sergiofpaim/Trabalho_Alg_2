@@ -9,7 +9,7 @@ Abra um terminal (cmd ou PowerShell) no diretório do projeto e execute:
 
 ```bash
 cd src/
-gcc main.c -o ../speedrunners.exe
+gcc *.c -o ../speedrunners.exe
 cd ..
 ```
 
@@ -17,7 +17,7 @@ ou, se preferir produzir sem extensão no Linux/MinGW:
 
 ```bash
 cd src/
-gcc main.c -o ../speedrunners
+gcc *.c -o ../speedrunners
 cd ..
 ```
 
