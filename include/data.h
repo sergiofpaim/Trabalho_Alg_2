@@ -53,9 +53,8 @@ struct Resultados
     int *lista;
 };
 
-/* variáveis globais (definidas em data.c) */
 extern struct Usuarios usuarios;
 extern struct Jogos jogos;
 extern struct Recordes recordes;
 
-#endif // TRABALHO_DATA_H
+#endif

@@ -15,4 +15,4 @@ void mostrarJogos();
 void consulta();
 void interpretador(int prompt);
 
-#endif // TRABALHO_OPERATIONS_H
+#endif

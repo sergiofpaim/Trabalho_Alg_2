@@ -7,4 +7,4 @@ void desserializarAlteracoes();
 void serializarAlteracoes();
 void exportarResultado(struct Recordes *consulta);
 
-#endif // TRABALHO_STORAGE_H
+#endif
