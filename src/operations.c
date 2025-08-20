@@ -44,7 +44,9 @@ void usuarioAdd()
         printf("\nNascimento (dd-mm-aaaa)\n");
         printf("\n> ");
         fgets(temp.nascimento, sizeof(temp.nascimento), stdin);
-        temp.nascimento[strcspn(temp.nascimento, "\n")] = '\0';
+
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
         
         if (validarData(temp.nascimento) != 1) 
         printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
@@ -98,7 +100,9 @@ void jogoAdd()
         printf("\nLançamento (dd-mm-aaaa)\n");
         printf("\n> ");
         fgets(temp.data_lancamento, sizeof(temp.data_lancamento), stdin);
-        temp.data_lancamento[strcspn(temp.data_lancamento, "\n")] = '\0';
+        
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
         
         if (validarData(temp.data_lancamento) != 1) 
             printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
@@ -237,7 +241,9 @@ void usuarioEdit()
                         printf("\nNascimento (dd-mm-aaaa)\n");
                         printf("\n> ");
                         fgets(temp.nascimento, sizeof(temp.nascimento), stdin);
-                        temp.nascimento[strcspn(temp.nascimento, "\n")] = '\0';
+
+                        int c;
+                        while ((c = getchar()) != '\n' && c != EOF);
                         
                         if (validarData(temp.nascimento) != 1) 
                             printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
@@ -319,7 +325,9 @@ void jogoEdit()
                         printf("\nLançamento (dd-mm-aaaa)\n");
                         printf("\n> ");
                         fgets(temp.data_lancamento, sizeof(temp.data_lancamento), stdin);
-                        temp.data_lancamento[strcspn(temp.data_lancamento, "\n")] = '\0';
+                        
+                        int c;
+                        while ((c = getchar()) != '\n' && c != EOF);
 
                         if (validarData(temp.data_lancamento) != 1)
                             printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
