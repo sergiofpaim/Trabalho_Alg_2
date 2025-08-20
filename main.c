@@ -4,6 +4,10 @@
 #include <time.h>
 #include <ctype.h>
 
+/* ============================================================
+   Seção: Estruturas de dados
+   - Definições das entidades: Usuario, Jogo, Recorde e coleções
+   ============================================================ */
 struct Usuario
 {
     char apelido[24];
@@ -57,6 +61,14 @@ struct Usuarios usuarios;
 struct Jogos jogos;
 struct Recordes recordes;
 
+/* ============================================================
+   Seção: Utilitários (funções auxiliares)
+   - Serialização/Deserialização de strings simples
+   - Geração de ID
+   - Formatação de tempo/data
+   - Validação de entrada
+   ============================================================ */
+
 void serializarString(char* destino, char* origem)
 {
     int i;
@@ -77,6 +89,8 @@ int gerarId(int min, int max) {
     return min + rand() % (max - min + 1);
 }
 
+/* Retorna uma string alocada dinamicamente no formato HH:MM:SS:MMM
+   O chamador é responsável por free() */
 char* formatarTempo(unsigned long long int ms) 
 {
     unsigned long long horas, minutos, segundos, milisecundos;
@@ -93,6 +107,8 @@ char* formatarTempo(unsigned long long int ms)
     return saida;
 }
 
+/* Retorna uma string alocada dinamicamente no formato dd/mm/aaaa
+   O chamador é responsável por free() */
 char* formatarData(time_t data)
 {
     struct tm *tm_info = localtime(&data);
@@ -103,6 +119,7 @@ char* formatarData(time_t data)
     return saida;
 }
 
+/* Valida data no formato dd-mm-aaaa (com hífen) */
 int validarData(char *str) {
     if (!str || strlen(str) != 10)
         return 0;
@@ -112,7 +129,7 @@ int validarData(char *str) {
 
     for (int i = 0; i < 10; i++) {
         if (i == 2 || i == 5) continue;
-        if (!isdigit(str[i])) return 0;
+        if (!isdigit((unsigned char)str[i])) return 0;
     }
 
     int dia = atoi(str);
@@ -130,6 +147,7 @@ int validarData(char *str) {
     return 1; 
 }
 
+/* Valida tempo (horas:minutos:segundos:milissegundos) */
 int validarTempo(int horas, int minutos, int segundos, int milissegundos) {
     if (horas < 0) return 0;                     
     if (minutos < 0 || minutos > 59) return 0;   
@@ -137,6 +155,11 @@ int validarTempo(int horas, int minutos, int segundos, int milissegundos) {
     if (milissegundos < 0 || milissegundos > 999) return 0; 
     return 1;
 }
+
+/* ============================================================
+   Seção: Entrada/Saída (serialização dos arquivos)
+   - Leitura/escrita de usuarios, jogos e recordes em arquivos
+   ============================================================ */
 
 void exportarResultado(struct Recordes *consulta)
 {
@@ -150,13 +173,19 @@ void exportarResultado(struct Recordes *consulta)
     // Salva os dados da struct no arquivo
     for (int i = 0; i < consulta->tamanho; i++)
     {
+        char *tempo_str = formatarTempo(consulta->lista[i].tempo);
+        char *data_str = formatarData(consulta->lista[i].data_registro);
+
         fprintf(out, "Usuário: %s\n", consulta->lista[i].usuario);
         fprintf(out, "Jogo: %s\n", consulta->lista[i].jogo);
         fprintf(out, "Plataforma: %s\n", consulta->lista[i].plataforma);
-        fprintf(out, "Tempo: %s\n", formatarTempo(consulta->lista[i].tempo));
-        fprintf(out, "Data de Registro: %s\n", formatarData(consulta->lista[i].data_registro));
+        fprintf(out, "Tempo: %s\n", tempo_str);
+        fprintf(out, "Data de Registro: %s\n", data_str);
         fprintf(out, "Identificador: %d\n", consulta->lista[i].identificacao);
         fprintf(out, "--------------------------\n");
+
+        free(tempo_str);
+        free(data_str);
     }
 
     fclose(out);
@@ -315,8 +344,14 @@ void serializarAlteracoes()
     }
 
     fclose(fileRecordes);
+
+    printf("Alterações salvas com sucesso!\n");
 }
 
+/* ============================================================
+   Seção: Consultas e buscas
+   - Funções para procurar usuários, jogos e recordes
+   ============================================================ */
 
 // Confere se o usuário já existe no banco de dados
 int usuarioQuery(char *identificacao)
@@ -355,6 +390,11 @@ struct Resultados recordeQuery(char* nomeJogador, char* nomeJogo, char* identifi
 
     return resultados;
 }
+
+/* ============================================================
+   Seção: Operações CRUD (Adicionar, Editar, Deletar)
+   - Funções para gerenciar usuarios, jogos e recordes
+   ============================================================ */
 
 void usuarioAdd()
 {
@@ -397,9 +437,9 @@ void usuarioAdd()
     } 
     while (1);
 
-    printf("\nPa��s\n");
+    printf("\nPaís\n");
     printf("\n> ");
-    getchar();
+    /* Removido getchar() desnecessário para não quebrar a leitura */
     fgets(temp.pais, sizeof(temp.pais), stdin);
     temp.pais[strcspn(temp.pais, "\n")] = '\0';
 
@@ -555,15 +595,17 @@ void usuarioEdit()
                     case 1:
                         printf("\nDigite o nome:\n");
                         printf("\n> ");
-                        char temp[24];
-                        fgets(temp, sizeof(temp), stdin);
-                        temp[strcspn(temp, "\n")] = '\0';
-
-                        if (usuarioQuery(temp) >= 0) printf("\nNome já existe\n");
-                        else
                         {
-                            strcpy(usuarios.lista[posicao].apelido, temp);
-                            printf("\nNome editado com sucesso\n");
+                            char tempNome[24];
+                            fgets(tempNome, sizeof(tempNome), stdin);
+                            tempNome[strcspn(tempNome, "\n")] = '\0';
+
+                            if (usuarioQuery(tempNome) >= 0) printf("\nNome já existe\n");
+                            else
+                            {
+                                strcpy(usuarios.lista[posicao].apelido, tempNome);
+                                printf("\nNome editado com sucesso\n");
+                            }
                         }
                         break;
                     case 2:
@@ -637,13 +679,15 @@ void jogoEdit()
                 case 1:
                     printf("\nDigite o do jogo: \n");
                     printf("\n> ");
-                    char temp[24];
-                    fgets(temp, sizeof(temp), stdin);
-                    temp[strcspn(temp, "\n")] = '\0';
-                    if (jogoQuery(temp) >= 0) printf("\nJogo com nome já registrado!\n");
-                    else { 
-                        strcpy(jogos.lista[posicao].nome, temp);
-                        printf("\nNome registrado com sucesso!\n");
+                    {
+                        char tempNome[24];
+                        fgets(tempNome, sizeof(tempNome), stdin);
+                        tempNome[strcspn(tempNome, "\n")] = '\0';
+                        if (jogoQuery(tempNome) >= 0) printf("\nJogo com nome já registrado!\n");
+                        else { 
+                            strcpy(jogos.lista[posicao].nome, tempNome);
+                            printf("\nNome registrado com sucesso!\n");
+                        }
                     }
                     break;
                 case 2:
@@ -807,15 +851,16 @@ void jogoDelete()
     fgets(nome, sizeof(nome), stdin);
     nome[strcspn(nome, "\n")] = '\0';
 
-    if((posicao = jogoQuery(nome)))
+    /* Corrigido: comparar corretamente com >= 0 (índice 0 é válido) */
+    if((posicao = jogoQuery(nome)) >= 0)
     {
         struct Resultados resultados = recordeQuery("*", nome, "*");
         if(resultados.tamanho == 0)
         {
-        jogos.lista[posicao] = jogos.lista[jogos.tamanho - 1];
-        jogos.lista = (struct Jogo*) realloc (jogos.lista, --jogos.tamanho * sizeof(struct Jogo));
-        resultados = recordeQuery("*", jogos.lista[posicao].nome, "*");
-        printf("\nJogo deletado com sucesso!\n");
+            jogos.lista[posicao] = jogos.lista[jogos.tamanho - 1];
+            jogos.lista = (struct Jogo*) realloc (jogos.lista, --jogos.tamanho * sizeof(struct Jogo));
+            resultados = recordeQuery("*", jogos.lista[posicao].nome, "*");
+            printf("\nJogo deletado com sucesso!\n");
         }
         else
             printf("\nNão foi possível deletar este jogo, pois há recordes registrados com ele no banco de dados, delete-os primeiro");
@@ -842,18 +887,23 @@ void recordeDelete()
     else printf("\nRecorde não encontrado!\n");
 }
 
+/* ============================================================
+   Seção: Exibição / Consulta
+   - Mostrar listas e fazer consultas ordenadas
+   ============================================================ */
+
 void mostrarUsuarios()
 {
     if (usuarios.tamanho != 0)
     {
-        printf("\nUsuarios\n");
+        printf("\nUsuarios\n\n");
+        printf("--------------------------\n");
         for (int i = 0; i < usuarios.tamanho; i++){
-            printf("\n---\n");
             printf("\nApelido: %s\n", usuarios.lista[i].apelido);
             printf("\nEmail: %s\n", usuarios.lista[i].email);
             printf("\nNascimento: %s\n", usuarios.lista[i].nascimento);
             printf("\nPais: %s\n", usuarios.lista[i].pais);
-            printf("\n---\n");
+            printf("--------------------------\n");
         }
     }
     else
@@ -864,14 +914,14 @@ void mostrarJogos()
 {
      if (jogos.tamanho != 0)
     {
-        printf("\nJogos\n");
+        printf("\nJogos\n\n");
+        printf("\n---\n");
         for (int i = 0; i < jogos.tamanho; i++){
-            printf("\n---\n");
             printf("\nNome: %s\n", jogos.lista[i].nome);
             printf("\nDesenvolvedora: %s\n", jogos.lista[i].desenvolvedora);
             printf("\nData_lancamento: %s\n", jogos.lista[i].data_lancamento);
             printf("\nGênero: %s\n", jogos.lista[i].genero);
-            printf("\n---\n");
+            printf("--------------------------\n");
         }
     }
     else
@@ -920,9 +970,7 @@ void consulta()
         consulta.lista[consulta.tamanho - 1] = recordes.lista[resultados.lista[i]];
     }
 
-    // "Recordes:\n" 11
-    // "1. [identificador] [nomeJogador] [pais] [jogo] [tempo] [data_registro]\n" 11 + 24 + 12 + 24 + 12 + 10 = 93 * consulta.tamanho 
-
+    // ordena por tempo (bubble sort simples)
     for (int i = 0; i < consulta.tamanho - 1; i++)
         for (int j = 0; j < consulta.tamanho -1; j++)
             if (consulta.lista[j].tempo > consulta.lista[j+1].tempo)
@@ -959,6 +1007,7 @@ void consulta()
     printf("\nGostaria de exportar os resultados da sua consulta? (s/n)\n");
     printf("> ");
     scanf("%c", &escolha);
+    while(getchar() != '\n');
 
     if (escolha == 's')
         exportarResultado(&consulta);
@@ -966,9 +1015,14 @@ void consulta()
         printf("Escolha inválida");
 }
 
+/* ============================================================
+   Seção: Interpretador / Menu
+   - Mapeia comandos para funções
+   ============================================================ */
+
 void interpretador(int prompt)
 {
-    char ajuda[] = "[0] = Ajuda\n[1] = Adicionar Jogador\n[2] = Editar Jogador\n[3] = Deletar Jogador\n[4] = Adicionar Jogo\n[5] = Editar Jogo\n[6] = Deletar Jogo\n[7] = Adicionar Recorde\n[8] = Editar Recorde\n[9] = Remover Recorde\n[10] = Consultar\n[999] = Finalizar Programa\n";
+    char ajuda[] = "[0] = Ajuda\n[1] = Adicionar Jogador\n[2] = Editar Jogador\n[3] = Deletar Jogador\n[4] = Adicionar Jogo\n[5] = Editar Jogo\n[6] = Deletar Jogo\n[7] = Adicionar Recorde\n[8] = Editar Recorde\n[9] = Remover Recorde\n[10] = Mostrar Usuarios\n[11] = Mostrar Jogos\n[12] = Consultar\n[999] = Finalizar Programa\n";
 
     switch (prompt){
         case 0:
@@ -1020,10 +1074,15 @@ void interpretador(int prompt)
     }
 }
 
+/* ============================================================
+   Seção: main
+   - Inicialização e loop principal
+   ============================================================ */
+
 int main()
 {
     // Inicializa o gerador com a hora atual
-    srand(time(NULL)); 
+    srand((unsigned int)time(NULL)); 
 
     usuarios.tamanho = 0;
     usuarios.lista = (struct Usuario*)malloc(usuarios.tamanho * sizeof(struct Usuario));
@@ -1044,7 +1103,11 @@ int main()
     {
         printf("\nDigite o comando, ou 0 para ajuda\n");
         printf("\n> ");
-        scanf("%d", &prompt);
+        if (scanf("%d", &prompt) != 1) {
+            while(getchar() != '\n');
+            printf("\nEntrada inválida\n");
+            continue;
+        }
         while(getchar() != '\n');
 
         interpretador(prompt);
