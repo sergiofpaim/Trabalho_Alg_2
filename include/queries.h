@@ -1,5 +1,5 @@
-#ifndef TRABALHO_QUERIES_H
-#define TRABALHO_QUERIES_H
+#ifndef QUERIES_H
+#define QUERIES_H
 
 #include "data.h"
 

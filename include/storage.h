@@ -1,5 +1,5 @@
-#ifndef TRABALHO_STORAGE_H
-#define TRABALHO_STORAGE_H
+#ifndef STORAGE_H
+#define STORAGE_H
 
 #include "data.h"
 

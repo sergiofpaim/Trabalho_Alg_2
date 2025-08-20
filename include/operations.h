@@ -1,5 +1,5 @@
-#ifndef TRABALHO_OPERATIONS_H
-#define TRABALHO_OPERATIONS_H
+#ifndef OPERATIONS_H
+#define OPERATIONS_H
 
 void usuarioAdd();
 void jogoAdd();

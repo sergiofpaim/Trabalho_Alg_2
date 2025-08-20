@@ -1,5 +1,5 @@
-#ifndef TRABALHO_DATA_H
-#define TRABALHO_DATA_H
+#ifndef DATA_H
+#define DATA_H
 
 #include <time.h>
 
