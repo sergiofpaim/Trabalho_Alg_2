@@ -16,7 +16,6 @@
 void usuarioAdd()
 {
     struct Usuario temp;
-    int nomeExistente = 0;
 
     printf("\nDigite as informações do usuário:\n");
 
@@ -27,6 +26,8 @@ void usuarioAdd()
 
         fgets(temp.apelido, sizeof(temp.apelido), stdin);
         temp.apelido[strcspn(temp.apelido, "\n")] = '\0';
+
+        int nomeExistente = 0;
 
         if ((nomeExistente = usuarioQuery(temp.apelido)) >= 0)
             printf("\nNome já existe no banco de dados\n");
@@ -129,7 +130,8 @@ void jogoAdd()
 void recordeAdd()
 {
     struct Recorde temp;
-    char player[24], jogoN[24];
+
+    char player[24], jogo[24];
     int horas, minutos, segundos, milisecundos;
 
     printf("\nDigite as informações do recorde:\n");
@@ -149,11 +151,11 @@ void recordeAdd()
 
     printf("\nNome do jogo:\n");
     printf("\n> ");
-    fgets(jogoN, sizeof(jogoN), stdin);
-    jogoN[strcspn(jogoN, "\n")] = '\0';
+    fgets(jogo, sizeof(jogo), stdin);
+    jogo[strcspn(jogo, "\n")] = '\0';
 
-    if (jogoQuery(jogoN) >= 0)
-        strcpy(temp.jogo, jogos.lista[jogoQuery(jogoN)].nome);
+    if (jogoQuery(jogo) >= 0)
+        strcpy(temp.jogo, jogos.lista[jogoQuery(jogo)].nome);
     else
     {
         printf("\nJogo não encontrado!\n");
@@ -243,6 +245,7 @@ void usuarioEdit()
                 do
                 {
                     struct Usuario temp;
+
                     printf("\nNascimento (dd-mm-aaaa)\n");
                     printf("\n> ");
                     fgets(temp.nascimento, sizeof(temp.nascimento), stdin);
@@ -280,11 +283,11 @@ void usuarioEdit()
 void jogoEdit()
 {
     int posicao;
+    char temp[23];
 
     printf("\nDigite o nome do jogo:\n");
-
-    char temp[23];
     printf("\n> ");
+
     fgets(temp, sizeof(temp), stdin);
     temp[strcspn(temp, "\n")] = '\0';
 
@@ -364,11 +367,14 @@ void jogoEdit()
 
 void recordeEdit()
 {
-    printf("\nDigite o id do recorde:\n");
     char id[24];
+
+    printf("\nDigite o id do recorde:\n");
     printf("\n> ");
+
     fgets(id, sizeof(id), stdin);
     id[strcspn(id, "\n")] = '\0';
+
     struct Resultados resultado = recordeQuery("*", "*", id);
 
     if (resultado.tamanho > 0)
@@ -454,10 +460,11 @@ void recordeEdit()
 void usuarioDelete()
 {
     int posicao;
+    char apelido[24];
 
     printf("\nDigite o apelido do usuario:\n");
-    char apelido[24];
     printf("\n> ");
+
     fgets(apelido, sizeof(apelido), stdin);
     apelido[strcspn(apelido, "\n")] = '\0';
 
@@ -480,9 +487,11 @@ void usuarioDelete()
 void jogoDelete()
 {
     int posicao;
+    char nome[24];
 
     printf("\nDigite o nome do jogo: \n");
-    char nome[24];
+    printf("\n> ");
+
     fgets(nome, sizeof(nome), stdin);
     nome[strcspn(nome, "\n")] = '\0';
 
@@ -506,10 +515,13 @@ void jogoDelete()
 void recordeDelete()
 {
     char id[24];
+
     printf("\nDigite identificador do recorde: \n");
     printf("\n> ");
+
     fgets(id, sizeof(id), stdin);
     id[strcspn(id, "\n")] = '\0';
+
     struct Resultados resultado = recordeQuery("*", "*", id);
 
     if (resultado.tamanho > 0)
@@ -568,7 +580,7 @@ void consulta()
 
     struct Recordes consulta;
     consulta.tamanho = 0;
-    consulta.lista = (struct Recorde *)malloc(consulta.tamanho * sizeof(struct Recorde));
+    consulta.lista = NULL; // começa sem nada
 
     printf("\nDigite a sua consulta neste formato \n\napelido_jogador\nnome_jogo\nidentificação_recorde\n\nOu '*' para todos daquela posicao\n");
     printf("\nApelido Jogador> ");
@@ -598,10 +610,29 @@ void consulta()
 
     for (int i = 0; i < resultados.tamanho; i++)
     {
-        consulta.lista = (struct Recorde *)realloc(consulta.lista, ++consulta.tamanho * sizeof(struct Recorde));
-        consulta.lista[consulta.tamanho - 1] = recordes.lista[resultados.lista[i]];
+        struct Recorde candidato = recordes.lista[resultados.lista[i]];
+
+        // verifica se já existe na lista "consulta"
+        int jaExiste = 0;
+        for (int k = 0; k < consulta.tamanho; k++)
+        {
+            if (consulta.lista[k].identificacao == candidato.identificacao)
+            {
+                jaExiste = 1;
+                break;
+            }
+        }
+
+        // se não existe, insere
+        if (!jaExiste)
+        {
+            consulta.lista = realloc(consulta.lista, (consulta.tamanho + 1) * sizeof(struct Recorde));
+            consulta.lista[consulta.tamanho] = candidato;
+            consulta.tamanho++;
+        }
     }
 
+    // ordena pelo tempo (bubble sort simples)
     for (int i = 0; i < consulta.tamanho - 1; i++)
         for (int j = 0; j < consulta.tamanho - 1; j++)
             if (consulta.lista[j].tempo > consulta.lista[j + 1].tempo)
