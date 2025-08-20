@@ -6,7 +6,7 @@
 
 void exportarResultado(struct Recordes *consulta)
 {
-    FILE* out = fopen("../armazenamento/tabela_recordes.txt", "w");
+    FILE* out = fopen("armazenamento/tabela_recordes.txt", "w");
     if (!out) {
         printf("\nFalha ao salvar o arquivo\n");
         return;
@@ -36,7 +36,7 @@ void exportarResultado(struct Recordes *consulta)
 
 void desserializarAlteracoes()
 {
-    FILE *fileUsuarios = fopen("../armazenamento/usuarios.txt", "r");
+    FILE *fileUsuarios = fopen("armazenamento/usuarios.txt", "r");
     if (!fileUsuarios) {
         // sem arquivo mantém coleções vazias
     } else {
@@ -58,7 +58,7 @@ void desserializarAlteracoes()
         fclose(fileUsuarios);
     }
 
-    FILE *fileJogos = fopen("../armazenamento/jogos.txt", "r");
+    FILE *fileJogos = fopen("armazenamento/jogos.txt", "r");
     if (!fileJogos) {
         // sem arquivo
     } else {
@@ -80,7 +80,7 @@ void desserializarAlteracoes()
         fclose(fileJogos);
     }
 
-    FILE *fileRecordes = fopen("../armazenamento/recordes.txt", "r");
+    FILE *fileRecordes = fopen("armazenamento/recordes.txt", "r");
     if (!fileRecordes) {
         // sem arquivo
     } else {
@@ -109,7 +109,7 @@ void desserializarAlteracoes()
 
 void serializarAlteracoes()
 {
-    FILE *fileUsuarios = fopen("../armazenamento/usuarios.txt", "w");
+    FILE *fileUsuarios = fopen("armazenamento/usuarios.txt", "w");
     if (!fileUsuarios) {
         printf("Erro ao abrir o arquivo!\n");
         return;
@@ -132,7 +132,7 @@ void serializarAlteracoes()
 
     fclose(fileUsuarios);
 
-    FILE *fileJogos = fopen("../armazenamento/jogos.txt", "w");
+    FILE *fileJogos = fopen("armazenamento/jogos.txt", "w");
     if (!fileJogos) {
         printf("Erro ao abrir o arquivo!\n");
         return;
@@ -155,7 +155,7 @@ void serializarAlteracoes()
 
     fclose(fileJogos);
 
-    FILE *fileRecordes = fopen("../armazenamento/recordes.txt", "w");
+    FILE *fileRecordes = fopen("armazenamento/recordes.txt", "w");
     if (!fileRecordes) {
         printf("Erro ao abrir o arquivo!\n");
         return;
