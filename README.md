@@ -8,10 +8,9 @@ O sistema permite adicionar, editar, remover e consultar dados, além de exporta
 Abra um terminal (cmd ou PowerShell) no diretório do projeto e execute:
 
 ```bash
-gcc -g src/* -o ../speedrunners
+gcc -g src/* -o speedrunners
 ```
 #### Execução
-No mesmo diretório que o executável:
 
 Windows:
 ```bash
