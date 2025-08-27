@@ -6,12 +6,12 @@
 #include <stdlib.h>
 
 /* ============================================================
-   Seção: Serialização e Desserialização em arquivos txt
+   Seção: Serialização e Desserialização
    ============================================================ */
 
 void desserializarAlteracoes()
 {
-    FILE *fileUsuarios = fopen("armazenamento/usuarios.txt", "r");
+    FILE *fileUsuarios = fopen("armazenamento/usuarios.bin", "rb");
     if (!fileUsuarios)
     {
         printf("Erro ao abrir o arquivo!\n");
@@ -19,25 +19,16 @@ void desserializarAlteracoes()
     }
     else
     {
-        fscanf(fileUsuarios, "%d", &usuarios.tamanho);
+        fread(&usuarios.tamanho, sizeof(int), 1, fileUsuarios);
         usuarios.lista = (struct Usuario *)realloc(usuarios.lista, usuarios.tamanho * sizeof(struct Usuario));
         for (int i = 0; i < usuarios.tamanho; i++)
         {
-            struct Usuario temp;
-            fscanf(fileUsuarios, "%s %s %s %s", temp.apelido,
-                   temp.email,
-                   temp.nascimento,
-                   temp.pais);
-
-            deserializarString(usuarios.lista[i].apelido, temp.apelido);
-            deserializarString(usuarios.lista[i].email, temp.email);
-            deserializarString(usuarios.lista[i].nascimento, temp.nascimento);
-            deserializarString(usuarios.lista[i].pais, temp.pais);
+            fread(&usuarios.lista[i], sizeof(struct Usuario), 1, fileUsuarios);
         }
         fclose(fileUsuarios);
     }
 
-    FILE *fileJogos = fopen("armazenamento/jogos.txt", "r");
+    FILE *fileJogos = fopen("armazenamento/jogos.bin", "rb");
     if (!fileJogos)
     {
         printf("Erro ao abrir o arquivo!\n");
@@ -45,25 +36,16 @@ void desserializarAlteracoes()
     }
     else
     {
-        fscanf(fileJogos, "%d", &jogos.tamanho);
+        fread(&jogos.tamanho, sizeof(int), 1, fileJogos);
         jogos.lista = (struct Jogo *)realloc(jogos.lista, jogos.tamanho * sizeof(struct Jogo));
         for (int i = 0; i < jogos.tamanho; i++)
         {
-            struct Jogo temp;
-            fscanf(fileJogos, "%s %s %s %s", temp.nome,
-                   temp.genero,
-                   temp.desenvolvedora,
-                   temp.data_lancamento);
-
-            deserializarString(jogos.lista[i].nome, temp.nome);
-            deserializarString(jogos.lista[i].genero, temp.genero);
-            deserializarString(jogos.lista[i].desenvolvedora, temp.desenvolvedora);
-            deserializarString(jogos.lista[i].data_lancamento, temp.data_lancamento);
+            fread(&jogos.lista[i], sizeof(struct Jogo), 1, fileJogos);
         }
         fclose(fileJogos);
     }
 
-    FILE *fileRecordes = fopen("armazenamento/recordes.txt", "r");
+    FILE *fileRecordes = fopen("armazenamento/recordes.bin", "rb");
     if (!fileRecordes)
     {
         printf("Erro ao abrir o arquivo!\n");
@@ -71,24 +53,11 @@ void desserializarAlteracoes()
     }
     else
     {
-        fscanf(fileRecordes, "%d", &recordes.tamanho);
+        fread(&recordes.tamanho, sizeof(int), 1, fileRecordes);
         recordes.lista = (struct Recorde *)realloc(recordes.lista, recordes.tamanho * sizeof(struct Recorde));
         for (int i = 0; i < recordes.tamanho; i++)
         {
-            struct Recorde temp;
-            fscanf(fileRecordes, "%s %s %s %llu %lld %d", temp.usuario,
-                   temp.jogo,
-                   temp.plataforma,
-                   &temp.tempo,
-                   &temp.data_registro,
-                   &temp.identificacao);
-
-            deserializarString(recordes.lista[i].usuario, temp.usuario);
-            deserializarString(recordes.lista[i].jogo, temp.jogo);
-            deserializarString(recordes.lista[i].plataforma, temp.plataforma);
-            recordes.lista[i].tempo = temp.tempo;
-            recordes.lista[i].data_registro = temp.data_registro;
-            recordes.lista[i].identificacao = temp.identificacao;
+            fread(&recordes.lista[i], sizeof(struct Recorde), 1, fileRecordes);
         }
         fclose(fileRecordes);
     }
@@ -96,78 +65,46 @@ void desserializarAlteracoes()
 
 void serializarAlteracoes()
 {
-    FILE *fileUsuarios = fopen("armazenamento/usuarios.txt", "w");
+    FILE *fileUsuarios = fopen("armazenamento/usuarios.bin", "wb");
     if (!fileUsuarios)
     {
         printf("Erro ao abrir o arquivo!\n");
         return;
     }
 
-    fprintf(fileUsuarios, "%d\n", usuarios.tamanho);
+    fwrite(&usuarios.tamanho, sizeof(int), 1, fileUsuarios);
     for (int i = 0; i < usuarios.tamanho; i++)
     {
-        char buffer[100];
-
-        serializarString(buffer, usuarios.lista[i].apelido);
-        fprintf(fileUsuarios, "%s ", buffer);
-        serializarString(buffer, usuarios.lista[i].email);
-        fprintf(fileUsuarios, "%s ", buffer);
-        serializarString(buffer, usuarios.lista[i].nascimento);
-        fprintf(fileUsuarios, "%s ", buffer);
-        serializarString(buffer, usuarios.lista[i].pais);
-        fprintf(fileUsuarios, "%s\n", buffer);
+        fwrite(&usuarios.lista[i], sizeof(struct Usuario), 1, fileUsuarios);
     }
-
     fclose(fileUsuarios);
 
-    FILE *fileJogos = fopen("armazenamento/jogos.txt", "w");
+    FILE *fileJogos = fopen("armazenamento/jogos.bin", "wb");
     if (!fileJogos)
     {
         printf("Erro ao abrir o arquivo!\n");
         return;
     }
 
-    fprintf(fileJogos, "%d\n", jogos.tamanho);
+    fwrite(&jogos.tamanho, sizeof(int), 1, fileJogos);
     for (int i = 0; i < jogos.tamanho; i++)
     {
-        char buffer[100];
-
-        serializarString(buffer, jogos.lista[i].nome);
-        fprintf(fileJogos, "%s ", buffer);
-        serializarString(buffer, jogos.lista[i].desenvolvedora);
-        fprintf(fileJogos, "%s ", buffer);
-        serializarString(buffer, jogos.lista[i].data_lancamento);
-        fprintf(fileJogos, "%s ", buffer);
-        serializarString(buffer, jogos.lista[i].genero);
-        fprintf(fileJogos, "%s\n", buffer);
+        fwrite(&jogos.lista[i], sizeof(struct Jogo), 1, fileJogos);
     }
-
     fclose(fileJogos);
 
-    FILE *fileRecordes = fopen("armazenamento/recordes.txt", "w");
+    FILE *fileRecordes = fopen("armazenamento/recordes.bin", "wb");
     if (!fileRecordes)
     {
         printf("Erro ao abrir o arquivo!\n");
         return;
     }
 
-    fprintf(fileRecordes, "%d\n", recordes.tamanho);
+    fwrite(&recordes.tamanho, sizeof(int), 1, fileRecordes);
     for (int i = 0; i < recordes.tamanho; i++)
     {
-        char buffer[100];
-
-        serializarString(buffer, recordes.lista[i].usuario);
-        fprintf(fileRecordes, "%s ", buffer);
-        serializarString(buffer, recordes.lista[i].jogo);
-        fprintf(fileRecordes, "%s ", buffer);
-        serializarString(buffer, recordes.lista[i].plataforma);
-        fprintf(fileRecordes, "%s ", buffer);
-
-        fprintf(fileRecordes, "%llu %lld %d\n", recordes.lista[i].tempo,
-                recordes.lista[i].data_registro,
-                recordes.lista[i].identificacao);
+        fwrite(&recordes.lista[i], sizeof(struct Recorde), 1, fileRecordes);
     }
-
     fclose(fileRecordes);
 
     printf("Alterações salvas com sucesso!\n");

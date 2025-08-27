@@ -8,19 +8,8 @@ O sistema permite adicionar, editar, remover e consultar dados, além de exporta
 Abra um terminal (cmd ou PowerShell) no diretório do projeto e execute:
 
 ```bash
-cd src/
-gcc *.c -o ../speedrunners.exe
-cd ..
+gcc -g src/* -o ../speedrunners
 ```
-
-ou, se preferir produzir sem extensão no Linux/MinGW:
-
-```bash
-cd src/
-gcc *.c -o ../speedrunners
-cd ..
-```
-
 #### Execução
 No mesmo diretório que o executável:
 
@@ -36,13 +25,14 @@ Linux/Mac:
 
 #### Arquivos de armazenamento
 O programa utiliza a pasta "armazenamento" com os arquivos:
-- armazenamento/usuarios.txt
-- armazenamento/jogos.txt
-- armazenamento/recordes.txt
+- armazenamento/usuarios.bin
+- armazenamento/jogos.bin
+- armazenamento/recordes.bin
 
-Ao encerrar o programa com a opção 999 os dados são serializados para esses arquivos.  
 O comando de exportação de consulta cria:
 - armazenamento/tabela_recordes.txt
+
+Ao encerrar o programa com a opção 999 os dados são serializados para esses arquivos.
 
 #### Formato das entradas
 - Datas: dd-mm-aaaa (ex: 05-08-2025)  
