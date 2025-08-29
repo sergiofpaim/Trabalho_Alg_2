@@ -1,9 +1,9 @@
 #ifndef OPERATIONS_H
 #define OPERATIONS_H
 
-void usuarioAdd();
-void jogoAdd();
-void recordeAdd();
+int usuarioAdd(char* apelido, char* email, char* nascimento, char* pais);
+int jogoAdd(char* nome, char* desenvolvedora, char* data_lancamento, char* genero);
+int recordeAdd(char* usuario, char* jogo, char* plataforma, char* tempo);
 void usuarioEdit();
 void jogoEdit();
 void recordeEdit();

@@ -6,42 +6,62 @@
 #include "../include/menus.h"
 #include "../include/operations.h"
 #include "../include/storage.h"
+#include "../include/utils.h"
 
 void adicionar()
 {
     printf("Modo de Adição\n");
     while (1)
     {
-        int controle;
-        char campos[4][50];
+        int controle, resp;
+        char campos[4][50], linha[200];
 
         printf("Modo de uso: <numero> <valor_campos> / 999 para voltar\n");
         printf("1. Usuario: apelido email nascimento pais\n");
         printf("2. Jogo: nome desenvolvedora data_lancamento genero\n");
         printf("3. Recorde: usuario jogo plataforma tempo\n");
+        printf("Obs:\n- Use a data no formato: dd/mm/AAAA\n");
+        printf("- Use tempo no formato hh:mm:ss:msms");
+        printf("- Use os valores entre aspas duplas\n");
         printf("\n> ");
         scanf("%d", &controle);
-        
         getchar();
 
         if (controle == 999) break;
-        for (int i = 0; i < 4; i++) 
-        {
-            printf("\n> ");
-            fgets(campos[i], sizeof(campos), stdin);
-            campos[i][strcspn(campos[i], "\n")] = '\0';
-        }
-        
+
+        fgets(linha, sizeof(linha), stdin);
+        linha[strcspn(linha, "\n")] = '\0';
+        separarArgumentos(campos, 4, linha);
+
+        for (int i = 0; i < 4; i++)
+            printf("%s\n", campos[i]);
+
         switch(controle)
         {
             case 1:
-                printf("Usuario\n");
+                resp = usuarioAdd(campos[0], campos[1], campos[2], campos[3]);
+
+                if (resp == -1) printf("[-] Erro ao alocar memória\n");
+                if (resp == 0) printf("[+] Usuario adicionado!\n");
+                if (resp == 1) printf("[-] Nome já existente na base de dados\n");
+                if (resp == 2) printf("[-] Formato de data inválido\n");
                 break;
             case 2:
-                printf("Jogo\n");
+                resp = jogoAdd(campos[0], campos[1], campos[2], campos[3]);
+
+                if (resp == -1) printf("[-] Erro ao alocar memória\n");
+                if (resp == 0) printf("[+] Jogo adicionado!\n");
+                if (resp == 1) printf("[-] jogo já existe na base de dados\n");
+                if (resp == 2) printf("[-] Formato de data inválido\n");
                 break;
             case 3:
-                printf("Recorde\n");
+                resp = recordeAdd(campos[0], campos[1], campos[2], campos[3]);
+
+                if (resp == -1) printf("[-] Erro ao alocar memória\n");
+                if (resp == 0) printf("[+] Recorde adicionado!\n");
+                if (resp == 1) printf("[-] Usuario não encontrado\n");
+                if (resp == 2) printf("[-] Jogo não encontrado\n");
+                if (resp == 3) printf("[-] Formato de tempo inválido\n");
                 break;
             default:
                 printf("Numero invalido!\n");

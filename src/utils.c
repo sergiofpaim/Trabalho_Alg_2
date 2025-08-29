@@ -60,7 +60,7 @@ int validarData(char *str)
     if (!str || strlen(str) != 10)
         return 0;
 
-    if (str[2] != '-' || str[5] != '-')
+    if (str[2] != '/' || str[5] != '/')
         return 0;
 
     for (int i = 0; i < 10; i++)
@@ -99,4 +99,62 @@ int validarTempo(int horas, int minutos, int segundos, int milissegundos)
     if (milissegundos < 0 || milissegundos > 999)
         return 0;
     return 1;
+}
+
+int validarRecordeTempo(char* str)
+{
+    if (!str || strlen(str) != 11) 
+        return 0;
+
+    if (str[2] != ':' || str[5] != ':' || str[8] != ':')
+        return 0;
+
+    for (int i = 0; i < 11; i++) {
+        if (i == 2 || i == 5 || i == 8) continue;
+        if (!isdigit((unsigned char)str[i]))
+            return 0;
+    }
+
+    int hora = atoi(str);
+    int minuto = atoi(str + 3);
+    int segundo = atoi(str + 6);
+    int ms = atoi(str + 9);
+
+    if (hora < 0 || hora > 23) return 0;
+    if (minuto < 0 || minuto > 59) return 0;
+    if (segundo < 0 || segundo > 59) return 0;
+    if (ms < 0 || ms > 99) return 0;
+
+    return 1;
+}
+
+unsigned long long int converterTempo(char* tempo)
+{
+    int horas, minutos, segundos, milisecundos;
+
+    sscanf(tempo, "%2d:%2d:%2d:%2d", &horas, &minutos, &segundos, &milisecundos);
+
+    return horas * 3600000ULL + minutos * 60000ULL + segundos * 1000ULL + milisecundos;
+}
+
+void separarArgumentos(char elementos[][50], int quantidade, char* valor)
+{
+    int controle = 0, i = 0;
+    while (valor[i] != '\0' && controle < quantidade)
+    {
+        if (valor[i] == '"')
+        {
+            i++;
+            int j = 0;
+            while(valor[i] != '"')
+            {
+                elementos[controle][j] = valor[i];
+                j++;
+                i++;
+            }
+            elementos[controle][j] = '\0';
+            controle++;
+        }
+        i++;
+    }
 }

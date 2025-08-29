@@ -14,184 +14,99 @@
    - Funções para gerenciar usuarios, jogos e recordes
    ============================================================ */
 
-void usuarioAdd()
+int usuarioAdd(char* apelido, char* email, char* nascimento, char* pais)
 {
     struct Usuario temp;
 
-    printf("\nDigite as informações do usuário:\n");
+    strncpy(temp.apelido, apelido, sizeof(temp.apelido)-1);
+    strncpy(temp.email, email, sizeof(temp.email)-1);
+    strncpy(temp.nascimento, nascimento, sizeof(temp.nascimento)-1);
+    strncpy(temp.pais, pais, sizeof(temp.pais)-1);
 
-    do
-    {
-        printf("\nApelido\n");
-        printf("\n> ");
+    if (usuarioQuery(temp.apelido) >= 0)
+        return 1;
 
-        fgets(temp.apelido, sizeof(temp.apelido), stdin);
-        temp.apelido[strcspn(temp.apelido, "\n")] = '\0';
-
-        int nomeExistente = 0;
-
-        if ((nomeExistente = usuarioQuery(temp.apelido)) >= 0)
-            printf("\nNome já existe no banco de dados\n");
-        else
-            break;
-    } while (1);
-
-    printf("\nEmail\n");
-    printf("\n> ");
-    fgets(temp.email, sizeof(temp.email), stdin);
-    temp.email[strcspn(temp.email, "\n")] = '\0';
-
-    do
-    {
-        printf("\nNascimento (dd-mm-aaaa)\n");
-        printf("\n> ");
-        fgets(temp.nascimento, sizeof(temp.nascimento), stdin);
-
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF)
-            ;
-
-        if (validarData(temp.nascimento) != 1)
-            printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
-        else
-            break;
-    } while (1);
-
-    printf("\nPaís\n");
-    printf("\n> ");
-    fgets(temp.pais, sizeof(temp.pais), stdin);
-    temp.pais[strcspn(temp.pais, "\n")] = '\0';
+    if (validarData(temp.nascimento) == 0)
+        return 2;
 
     usuarios.tamanho++;
     usuarios.lista = (struct Usuario *)realloc(usuarios.lista, usuarios.tamanho * sizeof(struct Usuario));
     if (usuarios.lista != NULL)
     {
         usuarios.lista[usuarios.tamanho - 1] = temp;
+        return 0;
     }
     else
     {
-        printf("\nErro ao alocar memória para novo usuário.\n");
         usuarios.tamanho--;
+        return -1;
     }
 }
 
-void jogoAdd()
+int jogoAdd(char* nome, char* desenvolvedora, char* data_lancamento, char* genero)
 {
     struct Jogo temp;
 
-    printf("\nDigite as informações do jogo:\n");
+    strncpy(temp.nome, nome, sizeof(temp.nome)-1);
+    strncpy(temp.desenvolvedora, desenvolvedora, sizeof(temp.desenvolvedora)-1);
+    strncpy(temp.data_lancamento, data_lancamento, sizeof(temp.data_lancamento)-1);
+    strncpy(temp.genero, genero, sizeof(temp.genero)-1);
 
-    do
-    {
-        printf("\nNome\n");
-        printf("\n> ");
-        fgets(temp.nome, sizeof(temp.nome), stdin);
-        temp.nome[strcspn(temp.nome, "\n")] = '\0';
+    if (jogoQuery(temp.nome) >= 0)
+        return 1;
 
-        if ((jogoQuery(temp.nome)) >= 0)
-            printf("\nO jogo já existe no banco de dados\n");
-        else
-            break;
-    } while (1);
-
-    printf("\nDesenvolvedores\n");
-    printf("\n> ");
-    fgets(temp.desenvolvedora, sizeof(temp.desenvolvedora), stdin);
-    temp.desenvolvedora[strcspn(temp.desenvolvedora, "\n")] = '\0';
-
-    do
-    {
-        printf("\nLançamento (dd-mm-aaaa)\n");
-        printf("\n> ");
-        fgets(temp.data_lancamento, sizeof(temp.data_lancamento), stdin);
-        temp.data_lancamento[strcspn(temp.data_lancamento, "\n")] = '\0';
-
-        if (validarData(temp.data_lancamento) != 1)
-            printf("\nData em formato inválido, digite no formato (dd-mm-aaaa)\n");
-        else
-            break;
-    } while (1);
-
-    printf("\nGênero\n");
-    printf("\n> ");
-    fgets(temp.genero, sizeof(temp.genero), stdin);
-    temp.genero[strcspn(temp.genero, "\n")] = '\0';
+    if (validarData(temp.data_lancamento) != 1)
+        return 2;
 
     jogos.lista = (struct Jogo *)realloc(jogos.lista, ++jogos.tamanho * sizeof(struct Jogo));
 
     if (jogos.lista != NULL)
+    {
         jogos.lista[jogos.tamanho - 1] = temp;
+        return 0;
+    }
     else
     {
-        printf("\nErro ao alocar memória para novo jogo");
         jogos.tamanho--;
+        return -1;
     }
 }
 
-void recordeAdd()
+int recordeAdd(char* usuario, char* jogo, char* plataforma, char* tempo)
 {
     struct Recorde temp;
 
-    char player[24], jogo[24];
-    int horas, minutos, segundos, milisecundos;
-
-    printf("\nDigite as informações do recorde:\n");
-
-    printf("\nNome do usuário: \n");
-    printf("\n> ");
-    fgets(player, sizeof(player), stdin);
-    player[strcspn(player, "\n")] = '\0';
-
-    if (usuarioQuery(player) >= 0)
-        strcpy(temp.usuario, usuarios.lista[usuarioQuery(player)].apelido);
+    if (usuarioQuery(usuario) >= 0)
+        strcpy(temp.usuario, usuario);
     else
-    {
-        printf("\nUsuário não encontrado!\n");
-        return;
-    }
-
-    printf("\nNome do jogo:\n");
-    printf("\n> ");
-    fgets(jogo, sizeof(jogo), stdin);
-    jogo[strcspn(jogo, "\n")] = '\0';
+        return 1;
 
     if (jogoQuery(jogo) >= 0)
-        strcpy(temp.jogo, jogos.lista[jogoQuery(jogo)].nome);
+        strcpy(temp.jogo, jogo);
     else
-    {
-        printf("\nJogo não encontrado!\n");
-        return;
-    }
+        return 2;
 
-    printf("\nPlataforma do Recorde:\n");
-    printf("\n> ");
-    fgets(temp.plataforma, sizeof(temp.plataforma), stdin);
-    temp.plataforma[strcspn(temp.plataforma, "\n")] = '\0';
+    if (validarRecordeTempo(tempo) == 1)
+        temp.tempo = converterTempo(tempo);
+    else 
+        return 3;
 
-    do
-    {
-        printf("\nTempo da Run (formato hh:mm:ss:msms):\n");
-        printf("\n> ");
-        scanf("%d:%d:%d:%d", &horas, &minutos, &segundos, &milisecundos);
-        while (getchar() != '\n')
-            ;
+    strncpy(temp.plataforma, plataforma, sizeof(temp.plataforma)-1);
 
-        if (validarTempo(horas, minutos, segundos, milisecundos) != 1)
-            printf("\nTempo em formato inválido, digite no formato (hh:mm:ss:msms)\n");
-    } while (validarTempo(horas, minutos, segundos, milisecundos) != 1);
-
-    temp.tempo = horas * 3600000ULL + minutos * 60000ULL + segundos * 1000ULL + milisecundos;
     temp.data_registro = time(NULL);
 
     temp.identificacao = gerarId(1000, 10000);
 
     recordes.lista = (struct Recorde *)realloc(recordes.lista, ++recordes.tamanho * sizeof(struct Recorde));
     if (recordes.lista != NULL)
+    {
         recordes.lista[recordes.tamanho - 1] = temp;
+        return 0;
+    }
     else
     {
-        printf("\nErro ao alocar memória para o recorde\n");
         recordes.tamanho--;
+        return -1;
     }
 }
 
@@ -642,7 +557,7 @@ void mostrarRecordes(struct Recordes consulta)
 
 void interpretador(int prompt)
 {
-    char ajuda[] = "[0] = Ajuda\n[1] = Adicionar Jogador\n[2] = Editar Jogador\n[3] = Deletar Jogador\n[4] = Adicionar Jogo\n[5] = Editar Jogo\n[6] = Deletar Jogo\n[7] = Adicionar Recorde\n[8] = Editar Recorde\n[9] = Remover Recorde\n[10] = Mostrar Usuarios\n[11] = Mostrar Jogos\n[12] = Consultar\n[999] = Finalizar Programa\n";
+    char ajuda[] = "[0] = Ajuda\n[1] = Adicionar elementos\n[2] = Editar elementos\n[3] = Deletar elementos\n[4] = Consultar\n[999] = Finalizar Programa\n";
 
     switch (prompt)
     {
@@ -650,48 +565,15 @@ void interpretador(int prompt)
         printf("\n%s", ajuda);
         break;
     case 1:
-        usuarioAdd();
-        break;
-    case 2:
-        usuarioEdit();
-        break;
-    case 3:
-        usuarioDelete();
-        break;
-    case 4:
-        jogoAdd();
-        break;
-    case 5:
-        jogoEdit();
-        break;
-    case 6:
-        jogoDelete();
-        break;
-    case 7:
-        recordeAdd();
-        break;
-    case 8:
-        recordeEdit();
-        break;
-    case 9:
-        recordeDelete();
-        break;
-    case 10:
-        mostrarUsuarios();
-        break;
-    case 11:
-        mostrarJogos();
-        break;
-    case 12:
-        //consulta();
-        break;
-    case 122:
         adicionar();
         break;
-    case 123:
+    case 2:
         editar();
         break;
-    case 124:
+    case 3:
+        deletar();
+        break;
+    case 4:
         consultar();
         break;
     case 999:

@@ -10,5 +10,8 @@ char *formatarTempo(unsigned long long int ms);
 char *formatarData(time_t data);
 int validarData(char *str);
 int validarTempo(int horas, int minutos, int segundos, int milissegundos);
+int validarRecordeTempo(char* str);
+unsigned long long int converterTempo(char* tempo);
+void separarArgumentos(char elementos[][50], int quantidade, char* valor);
 
 #endif
